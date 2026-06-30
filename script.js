@@ -40,15 +40,6 @@ const EVENTS = [
     type:    "Club Night",
     tickets: ""
   }
-  // Add more events below this line:
-  // {
-  //   date: "2026-09-05",
-  //   venue: "Club Name",
-  //   city: "City",
-  //   country: "CH",
-  //   type: "Club Night",
-  //   tickets: "https://tickets.example.com"
-  // },
 ];
 // ============================================================
 
