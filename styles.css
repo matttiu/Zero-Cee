@@ -541,6 +541,20 @@ ul[role="list"] { list-style: none; }
   font-style: italic;
 }
 
+.event-action .btn-primary {
+  background:
+    linear-gradient(var(--bg-2), var(--bg-2)) padding-box,
+    linear-gradient(130deg, var(--cyan), var(--purple)) border-box;
+  border: 1.5px solid transparent;
+  color: var(--cyan);
+}
+.event-action .btn-primary:hover {
+  background: linear-gradient(130deg, var(--cyan), var(--purple)) border-box;
+  color: #000;
+  transform: none;
+  box-shadow: none;
+}
+
 /* =====================================================
    MUSIC
    ===================================================== */
