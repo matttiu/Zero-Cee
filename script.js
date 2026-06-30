@@ -315,9 +315,34 @@ function initReveal() {
 /* ---- Booking Form ---- */
 function initForm() {
   const form = document.getElementById('booking-form');
-  if (!form) return;
+  const btn  = document.getElementById('submit-btn');
+  if (!form || !btn) return;
 
-  // Clear error state on input (Formspree handles submission)
+  const grid      = document.querySelector('.booking-grid');
+  const successEl = grid?.querySelector('[data-fs-success]');
+  const errorEl   = grid?.querySelector('[data-fs-error]');
+  const origText  = btn.textContent;
+
+  form.addEventListener('submit', () => {
+    btn.disabled    = true;
+    btn.textContent = 'Sending…';
+
+    // Formspree signals outcome by adding data-fs-active to the success/error div
+    const poll = setInterval(() => {
+      if (successEl?.hasAttribute('data-fs-active')) {
+        btn.textContent = 'Enquiry Sent ✓';
+        clearInterval(poll);
+      } else if (errorEl?.hasAttribute('data-fs-active')) {
+        btn.textContent = origText;
+        btn.disabled    = false;
+        clearInterval(poll);
+      }
+    }, 250);
+
+    setTimeout(() => clearInterval(poll), 30000);
+  });
+
+  // Clear error state on input
   form.querySelectorAll('[required]').forEach(field => {
     field.addEventListener('input', () => {
       field.closest('.form-group')?.classList.remove('has-error');
