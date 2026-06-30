@@ -26,18 +26,18 @@ const EVENTS = [
   },
   {
     date:    "2026-08-13",
-    venue:   "Club04",
+    venue:   "Venue TBA",
     city:    "Zürich",
     country: "CH",
-    type:    "Festival",
+    type:    "Club Night",
     tickets: ""
   },
   {
-    date:    "2026-08-22",
+    date:    "Date TBA",
     venue:   "Venue TBA",
-    city:    "Basel",
-    country: "CH",
-    type:    "Club Night",
+    city:    "City TBA",
+    country: "Country TBA",
+    type:    "Type TBA",
     tickets: ""
   }
 ];
