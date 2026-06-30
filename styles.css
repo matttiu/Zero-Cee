@@ -11,7 +11,6 @@
   --border:         rgba(255, 255, 255, 0.08);
   --border-strong:  rgba(255, 255, 255, 0.15);
 
-  /* EDIT: Primary accent colours */
   --cyan:           #f7c216;
   --purple:         #df3165;
 
@@ -109,6 +108,7 @@ ul[role="list"] { list-style: none; }
   background: linear-gradient(130deg, var(--cyan) 0%, var(--purple) 100%);
   color: #000;
   font-weight: 700;
+  border: none;
 }
 .btn-primary:hover {
   transform: translateY(-2px);
@@ -199,13 +199,17 @@ ul[role="list"] { list-style: none; }
 
 .nav-links .nav-cta {
   padding: 9px 20px;
-  border: 1px solid var(--cyan);
+  border: 1.5px solid transparent;
   border-radius: var(--radius);
+  background:
+    linear-gradient(var(--bg), var(--bg)) padding-box,
+    linear-gradient(130deg, var(--cyan), var(--purple)) border-box;
   color: var(--cyan) !important;
+  font-weight: 700;
 }
 .nav-links .nav-cta::after { display: none; }
 .nav-links .nav-cta:hover {
-  background: var(--cyan);
+  background: linear-gradient(130deg, var(--cyan), var(--purple)) border-box;
   color: #000 !important;
 }
 
