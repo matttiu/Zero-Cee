@@ -323,37 +323,10 @@ function initReveal() {
 
 /* ---- Booking Form ---- */
 function initForm() {
-  const form      = document.getElementById('booking-form');
-  const submitBtn = document.getElementById('submit-btn');
+  const form = document.getElementById('booking-form');
   if (!form) return;
 
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-
-    let valid = true;
-    form.querySelectorAll('[required]').forEach(field => {
-      const group = field.closest('.form-group');
-      const isEmpty = !field.value.trim();
-      group.classList.toggle('has-error', isEmpty);
-      if (isEmpty) valid = false;
-    });
-
-    if (!valid) {
-      form.querySelector('.has-error [required]')?.focus();
-      return;
-    }
-
-    // --------------------------------------------------------
-    // If you've connected a form backend (Formspree etc.),
-    // remove the code below and let the form submit normally
-    // by removing e.preventDefault() above.
-    // --------------------------------------------------------
-    submitBtn.textContent = '✓  Sent! We\'ll be in touch soon.';
-    submitBtn.disabled    = true;
-    Array.from(form.elements).forEach(el => { if (el !== submitBtn) el.disabled = true; });
-  });
-
-  // Clear error state on input
+  // Clear error state on input (Formspree handles submission)
   form.querySelectorAll('[required]').forEach(field => {
     field.addEventListener('input', () => {
       field.closest('.form-group')?.classList.remove('has-error');

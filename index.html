@@ -203,22 +203,27 @@
 
     <div class="booking-grid">
 
+      <div data-fs-success style="display: none; padding: 1rem; margin-bottom: 2rem; background: #10b981; color: white; border-radius: 0.5rem; text-align: center;">
+        Thanks for your inquiry! We'll be in touch within 24-48 hours.
+      </div>
+      <div data-fs-error style="display: none; padding: 1rem; margin-bottom: 2rem; background: #ef4444; color: white; border-radius: 0.5rem;"></div>
+
       <form class="booking-form" id="booking-form" novalidate>
         <div class="form-row">
           <div class="form-group">
             <label for="name">Your Name <span aria-hidden="true">*</span></label>
-            <input type="text" id="name" name="name" placeholder="Jane Smith" required autocomplete="name">
+            <input type="text" id="name" name="name" placeholder="Jane Smith" required autocomplete="name" data-fs-field>
           </div>
           <div class="form-group">
             <label for="email">Email Address <span aria-hidden="true">*</span></label>
-            <input type="email" id="email" name="email" placeholder="jane@venue.com" required autocomplete="email">
+            <input type="email" id="email" name="email" placeholder="jane@venue.com" required autocomplete="email" data-fs-field>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label for="event-type">Event Type <span aria-hidden="true">*</span></label>
             <div class="select-wrap">
-              <select id="event-type" name="event-type" required>
+              <select id="event-type" name="event-type" required data-fs-field>
                 <option value="" disabled selected>Select type…</option>
                 <option>Club Night</option>
                 <option>Festival</option>
@@ -233,18 +238,18 @@
           </div>
           <div class="form-group">
             <label for="event-date">Event Date <span aria-hidden="true">*</span></label>
-            <input type="date" id="event-date" name="event-date" required>
+            <input type="date" id="event-date" name="event-date" required data-fs-field>
           </div>
         </div>
         <div class="form-group">
           <label for="venue">Venue / Location <span aria-hidden="true">*</span></label>
-          <input type="text" id="venue" name="venue" placeholder="Club XYZ, Zurich, Switzerland" required>
+          <input type="text" id="venue" name="venue" placeholder="Club XYZ, Zurich, Switzerland" required data-fs-field>
         </div>
         <div class="form-group">
           <label for="message">Additional Details</label>
-          <textarea id="message" name="message" rows="5" placeholder="Expected attendance, set duration, genre preference, technical rider notes…"></textarea>
+          <textarea id="message" name="message" rows="5" placeholder="Expected attendance, set duration, genre preference, technical rider notes…" data-fs-field></textarea>
         </div>
-        <button type="submit" class="btn btn-primary btn-full" id="submit-btn">
+        <button type="submit" class="btn btn-primary btn-full" id="submit-btn" data-fs-submit-btn>
           Send Booking Enquiry
         </button>
         <p class="form-note">* Required. We typically respond within 24–48 hours.</p>
@@ -333,5 +338,10 @@
 </footer>
 
 <script src="script.js"></script>
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#booking-form', formId: 'mjgqednd' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
 </body>
 </html>
