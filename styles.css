@@ -269,6 +269,7 @@ ul[role="list"] { list-style: none; }
   text-align: center;
   padding: 0 24px;
   max-width: 900px;
+  margin: 0 auto;
 }
 .hero-label {
   font-family: 'Space Mono', monospace;
