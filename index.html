@@ -27,6 +27,7 @@
     <ul class="nav-links" role="list">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
+      <li><a href="#gallery">Gallery</a></li>
       <li><a href="#events">Events</a></li>
       <li><a href="#music">Music</a></li>
       <li><a href="#booking" class="nav-cta">Book Now</a></li>
@@ -111,6 +112,34 @@
         </div>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<!-- ================================================
+     GALLERY
+     To add/update photos: drop image files into the /photos
+     folder, then edit the PHOTOS array at the top of script.js.
+     ================================================ -->
+<section id="gallery" class="section">
+  <div class="container">
+    <span class="section-label">Visuals</span>
+    <h2 class="section-title">Gallery</h2>
+
+    <div class="carousel-wrap">
+      <div class="carousel" id="carousel">
+        <div class="carousel-track" id="carousel-track"></div>
+
+        <button type="button" class="carousel-arrow carousel-arrow-prev" id="carousel-prev" aria-label="Previous photo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <button type="button" class="carousel-arrow carousel-arrow-next" id="carousel-next" aria-label="Next photo">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+
+        <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Choose photo"></div>
+      </div>
+      <div class="carousel-glow" aria-hidden="true"></div>
     </div>
   </div>
 </section>

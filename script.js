@@ -44,6 +44,21 @@ const EVENTS = [
 // ============================================================
 
 
+// ============================================================
+// GALLERY PHOTOS — Edit this array to manage the carousel.
+//
+// 1. Drop your image files into the /photos folder.
+// 2. List their filenames below, in the order they should appear.
+//
+// Works best with up to about 10 photos.
+// ============================================================
+const PHOTOS = [
+  'photos/placeholder.png',
+  'photos/placeholder1.png'
+];
+// ============================================================
+
+
 /* ---- Render Events ---- */
 function renderEvents() {
   const list  = document.getElementById('events-list');
@@ -106,6 +121,139 @@ function escHtml(str) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+
+/* ---- Photo Carousel ---- */
+function initCarousel() {
+  const carousel = document.getElementById('carousel');
+  const track    = document.getElementById('carousel-track');
+  const dotsWrap = document.getElementById('carousel-dots');
+  const prevBtn  = document.getElementById('carousel-prev');
+  const nextBtn  = document.getElementById('carousel-next');
+  if (!carousel || !track) return;
+
+  if (PHOTOS.length === 0) {
+    carousel.closest('section')?.setAttribute('hidden', '');
+    return;
+  }
+
+  const AUTOPLAY_MS   = 5000;
+  const TRANSITION_MS = 600; // keep in sync with .carousel-track transition duration in styles.css
+  let index      = 0;
+  let timer      = null;
+  let animating  = false;
+
+  PHOTOS.forEach((src, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'carousel-slide';
+    slide.innerHTML = `<img src="${escHtml(src)}" alt="Zero Cee — photo ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+    track.appendChild(slide);
+
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = 'carousel-dot';
+    dot.setAttribute('role', 'tab');
+    dot.setAttribute('aria-label', `Go to photo ${i + 1}`);
+    dot.addEventListener('click', () => manualGoTo(i));
+    dotsWrap?.appendChild(dot);
+  });
+
+  const dots = dotsWrap ? Array.from(dotsWrap.children) : [];
+  const multi = PHOTOS.length > 1;
+
+  if (!multi) {
+    prevBtn?.setAttribute('hidden', '');
+    nextBtn?.setAttribute('hidden', '');
+    dotsWrap?.setAttribute('hidden', '');
+  } else {
+    dotsWrap?.style.setProperty('--autoplay-ms', `${AUTOPLAY_MS}ms`);
+  }
+
+  function render() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+    dots.forEach((d, i) => d.classList.toggle('active', i === index));
+  }
+
+  // Slide transitions and the autoplay clock are deliberately independent:
+  // goTo() only guards against overlapping transitions (so a slide always
+  // plays out at full length instead of being cut short and re-triggered
+  // by a fast follow-up click). Autoplay resets happen separately in the
+  // manual* wrappers below, so a click always resets the autoplay clock
+  // even when goTo ignores it — otherwise a focus change from that same
+  // click could stop the timer with nothing left to restart it.
+  let unlockTimer = null;
+  function goTo(i) {
+    if (animating) return;
+    animating = true;
+    clearTimeout(unlockTimer);
+    unlockTimer = setTimeout(() => { animating = false; }, TRANSITION_MS + 50);
+    index = (i + PHOTOS.length) % PHOTOS.length;
+    render();
+  }
+
+  track.addEventListener('transitionend', e => {
+    if (e.target === track && e.propertyName === 'transform') {
+      clearTimeout(unlockTimer);
+      animating = false;
+    }
+  });
+
+  function next()  { goTo(index + 1); }
+  function prev()  { goTo(index - 1); }
+  function manualGoTo(i) { goTo(i); restartAutoplay(); }
+  function manualNext()  { next();   restartAutoplay(); }
+  function manualPrev()  { prev();   restartAutoplay(); }
+
+  function startAutoplay() {
+    if (!multi) return;
+    clearInterval(timer); // always clear first — safe to call even if already running
+    timer = setInterval(next, AUTOPLAY_MS);
+    dotsWrap?.classList.remove('paused');
+  }
+  function stopAutoplay() {
+    clearInterval(timer);
+    dotsWrap?.classList.add('paused');
+  }
+  function restartAutoplay() {
+    stopAutoplay();
+    startAutoplay();
+    // Restart the active dot's fill animation so it always reflects the
+    // real timer, even on a click that landed mid-transition and left
+    // render() (and the fill it triggers) untouched.
+    const activeDot = dots[index];
+    if (activeDot) {
+      activeDot.classList.remove('active');
+      void activeDot.offsetWidth; // force reflow so the animation restarts
+      activeDot.classList.add('active');
+    }
+  }
+
+  prevBtn?.addEventListener('click', manualPrev);
+  nextBtn?.addEventListener('click', manualNext);
+
+  carousel.addEventListener('mouseenter', stopAutoplay);
+  carousel.addEventListener('mouseleave', startAutoplay);
+  carousel.addEventListener('focusin', stopAutoplay);
+  carousel.addEventListener('focusout', startAutoplay);
+
+  carousel.addEventListener('keydown', e => {
+    if (e.key === 'ArrowLeft')  manualPrev();
+    if (e.key === 'ArrowRight') manualNext();
+  });
+
+  // Touch swipe support
+  let touchStartX = null;
+  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener('touchend', e => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 40) (dx < 0 ? manualNext : manualPrev)();
+    touchStartX = null;
+  }, { passive: true });
+
+  render();
+  startAutoplay();
 }
 
 
@@ -354,6 +502,7 @@ function initForm() {
 /* ---- Init ---- */
 document.addEventListener('DOMContentLoaded', () => {
   renderEvents();
+  initCarousel();
   initParticles();
   initNav();
   initActiveNav();
@@ -362,6 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tag reveal elements in each section
   document.querySelectorAll(`
     #about .about-grid,
+    #gallery .section-label, #gallery .section-title, #gallery .carousel,
     #events .section-label, #events .section-title,
     #music .section-label, #music .section-title, #music .music-grid, #music .music-social-row,
     #booking .section-label, #booking .section-title, #booking .section-sub, #booking .booking-grid
