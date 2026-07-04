@@ -27,7 +27,11 @@
 
 /* ----- Reset ----- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  overflow-y: scroll;
+}
 body {
   background: var(--bg);
   color: var(--text);
@@ -242,13 +246,11 @@ ul[role="list"] { list-style: none; }
    ===================================================== */
 .hero {
   position: relative;
-  height: 100svh;
-  min-height: 580px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  margin-top: var(--nav-h);
+  padding: 80px 24px 120px 24px;
+  overflow: visible;
   isolation: isolate;
+  display: block;
 }
 #particles {
   position: absolute;
@@ -269,9 +271,10 @@ ul[role="list"] { list-style: none; }
   position: relative;
   z-index: 2;
   text-align: center;
-  padding: 0 24px;
-  max-width: 900px;
+  padding: 0 60px;
+  max-width: 600px;
   margin: 0 auto;
+  width: 100%;
 }
 .hero-label {
   font-family: 'Space Mono', monospace;
@@ -443,7 +446,7 @@ ul[role="list"] { list-style: none; }
 /* =====================================================
    GALLERY
    ===================================================== */
-.carousel-wrap { position: relative; margin-top: 48px; }
+.carousel-wrap { position: relative; margin-top: 48px; max-width: 320px; margin-left: auto; margin-right: auto; }
 
 .carousel-glow {
   position: absolute;
@@ -465,11 +468,13 @@ ul[role="list"] { list-style: none; }
   border: 1px solid var(--border);
   background: var(--surface);
   transition: border-color var(--transition);
+  max-width: 320px !important;
+  margin: 0 auto;
 }
 .carousel:hover { border-color: var(--border-strong); }
 .carousel-track {
   display: flex;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 9 / 16;
   transition: transform 0.6s var(--ease);
 }
 .carousel-slide {
@@ -918,6 +923,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 /* =====================================================
    RESPONSIVE
    ===================================================== */
+
+/* Tablet & Medium devices (900px and below) */
 @media (max-width: 900px) {
   :root { --section-pad: 72px; }
 
@@ -927,7 +934,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   }
   .about-image-wrap { max-width: 340px; }
 
-  .carousel-track { aspect-ratio: 4 / 3; }
+  .carousel-track { aspect-ratio: 3 / 4; }
   .carousel-arrow { width: 36px; height: 36px; }
 
   .booking-grid {
@@ -939,11 +946,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .music-grid { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 680px) {
-  :root { --section-pad: 56px; }
-
+/* Mobile: Navbar toggle (768px and below) */
+@media (max-width: 768px) {
   .nav-links {
-    display: none;
+    display: none !important;
     position: fixed;
     inset: var(--nav-h) 0 0;
     background: rgba(6, 6, 9, 0.98);
@@ -955,13 +961,34 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     overflow-y: auto;
+    z-index: 899;
   }
-  .nav-links.open { display: flex; }
+  .nav-links.open { display: flex !important; }
   .nav-links a { font-size: 1rem; letter-spacing: 0.08em; }
   .nav-links .nav-cta { width: 100%; justify-content: center; }
-  .nav-toggle { display: flex; }
+  .nav-toggle { display: flex !important; }
 
-  .hero-title { font-size: clamp(4rem, 20vw, 7rem); }
+  .hero-title { font-size: clamp(3.8rem, 15vw, 8rem); }
+}
+
+/* Small mobile devices (680px and below) */
+@media (max-width: 680px) {
+  :root { --section-pad: 56px; }
+
+  .hero-label { font-size: 0.63rem; letter-spacing: 0.4em; margin-bottom: 16px; }
+  .hero-title { font-size: clamp(3.2rem, 14vw, 6rem); }
+  .hero-tagline { font-size: clamp(0.88rem, 1.8vw, 1rem); margin-bottom: 32px; }
+
+  .hero-actions { gap: 12px; margin-bottom: 40px; flex-wrap: wrap; }
+  .btn { padding: 11px 20px; font-size: 0.8rem; }
+
+  .hero-socials { gap: 11px; }
+  .hero-socials a { width: 40px; height: 40px; }
+  .hero-socials a svg { width: 17px; height: 17px; }
+
+  .hero-scroll-hint { bottom: 24px; }
+  .hero-scroll-hint span { font-size: 0.52rem; letter-spacing: 0.3em; opacity: 0.5; }
+  .scroll-line { height: 32px; }
 
   .event-item {
     grid-template-columns: 72px 1fr;
@@ -981,7 +1008,35 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .footer-inner { flex-direction: column; align-items: flex-start; gap: 18px; }
 }
 
-@media (max-width: 400px) {
-  .hero-title { font-size: 3.6rem; }
-  .hero-actions { flex-direction: column; align-items: center; }
+/* Extra small mobile (480px and below) */
+@media (max-width: 480px) {
+  :root { --section-pad: 48px; }
+
+  .hero-label { font-size: 0.6rem; }
+  .hero-title { font-size: clamp(2.8rem, 12vw, 5rem); }
+  .hero-tagline { font-size: 0.82rem; margin-bottom: 28px; }
+
+  .hero-actions { margin-bottom: 36px; gap: 10px; }
+  .btn { padding: 10px 18px; font-size: 0.75rem; }
+  .btn-primary { padding: 10px 18px; }
+
+  .hero-socials { gap: 9px; }
+  .hero-socials a { width: 36px; height: 36px; }
+  .hero-socials a svg { width: 16px; height: 16px; }
+
+  .hero-scroll-hint { opacity: 0.7; }
+  .scroll-line { height: 28px; }
+
+  .container { padding: 0 20px; }
+
+  .about-stats { flex-wrap: wrap; gap: 20px; }
+}
+
+/* Ultra small mobile (360px and below) */
+@media (max-width: 360px) {
+  .hero-title { font-size: clamp(2.4rem, 11vw, 4rem); }
+  .hero-actions { flex-direction: column; }
+  .btn { width: 100%; }
+
+  .music-grid { gap: 16px; }
 }

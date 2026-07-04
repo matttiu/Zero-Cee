@@ -25,11 +25,11 @@ const EVENTS = [
     tickets: "https://eventfrog.ch/de/p/partys/house-techno/nachtzugang-x-blackout-7469385293575024925.html?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn7aCNTmU3KnE548gtq05eZpWlxhI9MfAUR1sUsSoKvEmv6i1DmTC2pLbQghs_aem_Wgl4-U7D2PgmXot4awMvHQs"
   },
   {
-    date:    "2026-08-13",
-    venue:   "Venue TBA",
-    city:    "Zürich",
+    date:    "2026-07-09",
+    venue:   "Private",
+    city:    "Effretikon",
     country: "CH",
-    type:    "Club Night",
+    type:    "Private/Invite Only",
     tickets: ""
   },
   {
@@ -53,8 +53,15 @@ const EVENTS = [
 // Works best with up to about 10 photos.
 // ============================================================
 const PHOTOS = [
-  'photos/placeholder.png',
-  'photos/placeholder1.png'
+  'photos/photo1.jpg',
+  'photos/photo2.jpg',
+  'photos/photo3.jpg',
+  'photos/photo4.jpg',
+  'photos/photo5.jpg',
+  'photos/photo6.jpg',
+  'photos/photo7.jpg',
+  'photos/photo8.jpg',
+  'photos/photo9.jpg',
 ];
 // ============================================================
 
