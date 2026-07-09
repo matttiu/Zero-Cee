@@ -813,6 +813,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 0.88rem;
 }
 #submit-btn:disabled { cursor: default; opacity: 0.65; }
+.form-checkbox {
+  gap: 0;
+  margin-top: 8px;
+}
+.form-checkbox label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+  cursor: pointer;
+}
+.form-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--cyan);
+}
+.form-checkbox a {
+  color: var(--cyan);
+  border-bottom: 1px solid var(--cyan);
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+.form-checkbox a:hover {
+  opacity: 0.8;
+}
 .form-note {
   font-size: 0.76rem;
   color: var(--text-muted);
@@ -877,10 +910,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .footer-inner {
   display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 24px;
+  flex-direction: column;
+}
+.footer-top {
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 24px;
+  width: 100%;
   flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 .footer-logo {
   font-family: 'Space Mono', monospace;
@@ -899,6 +950,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: flex;
 }
 .footer-socials a:hover { color: var(--cyan); transform: translateY(-2px); }
+.footer-privacy {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: color var(--transition), border-color var(--transition);
+}
+.footer-privacy:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.5);
+}
 .footer-copy { font-size: 0.78rem; color: var(--text-muted); }
 
 /* =====================================================
@@ -1030,6 +1092,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .container { padding: 0 20px; }
 
   .about-stats { flex-wrap: wrap; gap: 20px; }
+
+  .footer-top { flex-direction: column; }
 }
 
 /* Ultra small mobile (360px and below) */
