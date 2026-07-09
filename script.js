@@ -477,8 +477,16 @@ function initForm() {
   const successEl = grid?.querySelector('[data-fs-success]');
   const errorEl   = grid?.querySelector('[data-fs-error]');
   const origText  = btn.textContent;
+  const consentField = document.getElementById('consent');
 
-  form.addEventListener('submit', () => {
+  form.addEventListener('submit', (e) => {
+    if (!consentField?.checked) {
+      e.preventDefault();
+      const group = consentField?.closest('.form-group');
+      group?.classList.add('has-error');
+      return;
+    }
+
     btn.disabled    = true;
     btn.textContent = 'Sending…';
 
@@ -500,6 +508,9 @@ function initForm() {
   // Clear error state on input
   form.querySelectorAll('[required]').forEach(field => {
     field.addEventListener('input', () => {
+      field.closest('.form-group')?.classList.remove('has-error');
+    });
+    field.addEventListener('change', () => {
       field.closest('.form-group')?.classList.remove('has-error');
     });
   });
