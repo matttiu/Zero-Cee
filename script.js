@@ -517,6 +517,35 @@ function initForm() {
 }
 
 
+/* ---- Music embeds ----
+   SoundCloud iframes are only created once a visitor clicks — this delays
+   the connection to SoundCloud's servers (and any cookies it sets) until
+   there's a clear consenting action, instead of loading on every page visit. */
+function initMusicFacades() {
+  document.querySelectorAll('.music-facade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const trackId    = btn.dataset.trackId;
+      const trackTitle = btn.dataset.trackTitle;
+      const trackUrl   = btn.dataset.trackUrl;
+
+      const iframe = document.createElement('iframe');
+      iframe.width = '100%';
+      iframe.height = '300';
+      iframe.scrolling = 'no';
+      iframe.frameBorder = 'no';
+      iframe.allow = 'autoplay; encrypted-media';
+      iframe.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A${encodeURIComponent(trackId)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`;
+
+      const credit = document.createElement('div');
+      credit.style.cssText = 'font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif; font-weight: 100;';
+      credit.innerHTML = `<a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="${trackUrl}" title="${escHtml(trackTitle)}" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">${escHtml(trackTitle)}</a>`;
+
+      btn.replaceWith(iframe, credit);
+    });
+  });
+}
+
+
 /* ---- Init ---- */
 document.addEventListener('DOMContentLoaded', () => {
   renderEvents();
@@ -525,6 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNav();
   initActiveNav();
   initForm();
+  initMusicFacades();
 
   // Tag reveal elements in each section
   document.querySelectorAll(`

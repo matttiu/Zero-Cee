@@ -9,9 +9,6 @@
   <meta property="og:type" content="website">
   <title>ZERO CEE</title>
   <link rel="icon" href="icon.png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -54,7 +51,7 @@
       <a href="#events" class="btn btn-ghost">Upcoming Shows</a>
     </div>
     <div class="hero-socials">
-      <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @zero_cee_ch">
+      <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @zerocee.music">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
       <a href="https://www.tiktok.com/@zero_cee_ch" target="_blank" rel="noopener noreferrer" aria-label="TikTok @zero_cee_ch">
@@ -170,6 +167,10 @@
     <div class="music-grid">
 
       <!--
+        SoundCloud embeds load only after the visitor clicks — this keeps the site
+        from contacting SoundCloud's servers (and letting it set cookies) until
+        there's been a clear consenting action. See initMusicFacades() in script.js.
+
         EMBED 1 — SoundCloud or Mixcloud
         To get your embed code:
           SoundCloud: Go to track/set → Share → Embed → copy the <iframe> code
@@ -177,11 +178,19 @@
         Then delete the placeholder div and paste your iframe here.
       -->
       <div class="music-card">
-        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay; encrypted-media" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2339182175&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="https://soundcloud.com/siro-cescutti/the-real-home-zero-cee" title="THE REAL HOME - ZERO CEE" target="_blank" style="color: #cccccc; text-decoration: none;">THE REAL HOME - ZERO CEE</a></div>
+        <button type="button" class="music-facade" data-track-id="2339182175" data-track-title="THE REAL HOME - ZERO CEE" data-track-url="https://soundcloud.com/siro-cescutti/the-real-home-zero-cee" aria-label="Load SoundCloud player and play THE REAL HOME - ZERO CEE">
+          <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          <span class="music-facade-title">THE REAL HOME - ZERO CEE</span>
+          <span class="music-facade-hint">Click to load player from SoundCloud</span>
+        </button>
       </div>
 
       <div class="music-card">
-        <iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay; encrypted-media" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A2344163609&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="https://soundcloud.com/siro-cescutti/love-got-the-music-zero-cee" title="LOVE GOT THE MUSIC - ZERO CEE" target="_blank" style="color: #cccccc; text-decoration: none;">LOVE GOT THE MUSIC - ZERO CEE</a></div>
+        <button type="button" class="music-facade" data-track-id="2344163609" data-track-title="LOVE GOT THE MUSIC - ZERO CEE" data-track-url="https://soundcloud.com/siro-cescutti/love-got-the-music-zero-cee" aria-label="Load SoundCloud player and play LOVE GOT THE MUSIC - ZERO CEE">
+          <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          <span class="music-facade-title">LOVE GOT THE MUSIC - ZERO CEE</span>
+          <span class="music-facade-hint">Click to load player from SoundCloud</span>
+        </button>
       </div>
 
     </div>
@@ -271,7 +280,7 @@
         <div class="info-card">
           <h3>Direct Contact</h3>
           <p>For urgent enquiries:</p>
-          <a href="mailto:booking@zerocee.ch" class="info-email">siro02@bluewin.ch</a>
+          <a href="mailto:siro02@bluewin.ch" class="info-email">siro02@bluewin.ch</a>
         </div>
         <div class="info-card">
           <h3>Follow Along</h3>
@@ -316,7 +325,7 @@
       <div class="footer-top">
         <div class="footer-logo">ZERO CEE</div>
         <nav class="footer-socials" aria-label="Social media">
-          <a href="https://www.instagram.com/zero_cee_ch/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @zero_cee_ch">
+          <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @zerocee.music">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
           </a>
           <a href="https://www.tiktok.com/@zero_cee_ch" target="_blank" rel="noopener noreferrer" aria-label="TikTok @zero_cee_ch">
