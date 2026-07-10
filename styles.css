@@ -2,6 +2,32 @@
    ZERO CEE — Styles
    ===================================================== */
 
+/* ----- Self-hosted fonts (no third-party font requests) ----- */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url('fonts/SpaceGrotesk-variable-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('fonts/SpaceMono-400-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('fonts/SpaceMono-700-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* ----- Design Tokens ----- */
 :root {
   --bg:             #060609;
@@ -697,6 +723,38 @@ ul[role="list"] { list-style: none; }
   display: block;
   border: none;
 }
+.music-facade {
+  width: 100%;
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: var(--bg-2);
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+  font-family: inherit;
+  padding: 1rem;
+  text-align: center;
+}
+.music-facade-play {
+  color: #ff5500;
+  transition: transform var(--transition);
+}
+.music-facade:hover .music-facade-play,
+.music-facade:focus-visible .music-facade-play {
+  transform: scale(1.1);
+}
+.music-facade-title {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.music-facade-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
 .music-social-row {
   display: flex;
   align-items: center;
@@ -813,6 +871,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 0.88rem;
 }
 #submit-btn:disabled { cursor: default; opacity: 0.65; }
+.form-checkbox {
+  gap: 0;
+  margin-top: 8px;
+}
+.form-checkbox label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
+  cursor: pointer;
+}
+.form-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--cyan);
+}
+.form-checkbox a {
+  color: var(--cyan);
+  border-bottom: 1px solid var(--cyan);
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+.form-checkbox a:hover {
+  opacity: 0.8;
+}
 .form-note {
   font-size: 0.76rem;
   color: var(--text-muted);
@@ -877,10 +968,28 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 .footer-inner {
   display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 24px;
+  flex-direction: column;
+}
+.footer-top {
+  display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 24px;
+  width: 100%;
   flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
 }
 .footer-logo {
   font-family: 'Space Mono', monospace;
@@ -899,6 +1008,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: flex;
 }
 .footer-socials a:hover { color: var(--cyan); transform: translateY(-2px); }
+.footer-privacy {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  transition: color var(--transition), border-color var(--transition);
+}
+.footer-privacy:hover {
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.5);
+}
 .footer-copy { font-size: 0.78rem; color: var(--text-muted); }
 
 /* =====================================================
@@ -1030,6 +1150,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   .container { padding: 0 20px; }
 
   .about-stats { flex-wrap: wrap; gap: 20px; }
+
+  .footer-top { flex-direction: column; }
 }
 
 /* Ultra small mobile (360px and below) */
