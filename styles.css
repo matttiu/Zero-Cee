@@ -1085,7 +1085,7 @@ ul[role="list"] { list-style: none; }
     padding: var(--gap-lg) var(--gap);
     border-top: 2px solid var(--border);
     overflow-y: auto; z-index: 999;
-    height: 70vh; max-height: 70vh;
+    height: calc(100vh - var(--nav-h)); max-height: calc(100vh - var(--nav-h));
   }
   .nav-links.open { display: flex !important; }
   .nav-links a {
