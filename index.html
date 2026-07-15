@@ -4,25 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Zero Cee — DJ & Producer based in Switzerland. Bookings, upcoming events, and mixes.">
+  <meta name="theme-color" content="#0a0a0a">
   <meta property="og:title" content="ZERO CEE">
   <meta property="og:description" content="DJ & Producer — Switzerland">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.zerocee.ch/">
+  <meta property="og:image" content="https://www.zerocee.ch/About.jpg">
   <title>ZERO CEE</title>
+  <link rel="canonical" href="https://www.zerocee.ch/">
   <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <!-- ================================================
-     NAVIGATION
+     NAVIGATION — Brutalist Header
      ================================================ -->
-<nav id="navbar">
+<nav id="navbar" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="#home" class="nav-logo">ZERO CEE</a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+    <a href="#home" class="nav-logo" aria-label="Zero Cee Home">ZERO CEE</a>
+    <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
-    <ul class="nav-links" role="list">
+    <ul class="nav-links" id="nav-links" role="list">
       <li><a href="#home">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#gallery">Gallery</a></li>
@@ -31,124 +36,131 @@
       <li><a href="#booking" class="nav-cta">Book Now</a></li>
     </ul>
   </div>
+  <div id="scroll-progress" aria-hidden="true"></div>
 </nav>
 
 <!-- ================================================
-     HERO
+     HERO — Industrial Hero
      ================================================ -->
-<section id="home" class="hero">
+<section id="home" class="hero" aria-labelledby="hero-title">
   <canvas id="particles" aria-hidden="true"></canvas>
-  <div class="hero-bg-glow" aria-hidden="true"></div>
+  <div class="hero-frame" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+
   <div class="hero-content">
-    <p class="hero-label">DJ &amp; Producer</p>
-    <h1 class="hero-title">
+    <p class="hero-label mono">DJ / Producer</p>
+    <h1 id="hero-title" class="hero-title mono">
       <span class="hero-title-zero">ZERO</span>
       <span class="hero-title-cee">CEE</span>
     </h1>
-    <p class="hero-tagline">Creating unforgettable experiences with Swiss passion</p>
+    <p class="hero-tagline">Creating unforgettable experiences with Swiss precision</p>
     <div class="hero-actions">
       <a href="#booking" class="btn btn-primary">Book Now</a>
       <a href="#events" class="btn btn-ghost">Upcoming Shows</a>
     </div>
     <div class="hero-socials">
       <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @zerocee.music">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
       </a>
       <a href="https://www.tiktok.com/@zero_cee_ch" target="_blank" rel="noopener noreferrer" aria-label="TikTok @zero_cee_ch">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.23 8.23 0 0 0 4.84 1.55V7a4.85 4.85 0 0 1-1.07-.31z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.23 8.23 0 0 0 4.84 1.55V7a4.85 4.85 0 0 1-1.07-.31z"/></svg>
       </a>
       <a href="https://soundcloud.com/siro-cescutti" target="_blank" rel="noopener noreferrer" aria-label="SoundCloud">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><line x1="10" y1="17" x2="10" y2="14"/><line x1="13" y1="17" x2="13" y2="12"/><line x1="16" y1="17" x2="16" y2="14"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/><line x1="10" y1="17" x2="10" y2="14"/><line x1="13" y1="17" x2="13" y2="12"/><line x1="16" y1="17" x2="16" y2="14"/></svg>
       </a>
     </div>
+    <p class="hero-status mono"><span class="status-dot" aria-hidden="true"></span>Open for bookings</p>
   </div>
+
   <div class="hero-scroll-hint" aria-hidden="true">
-    <span>SCROLL</span>
+    <span class="mono">SCROLL</span>
     <div class="scroll-line"></div>
   </div>
 </section>
 
 <!-- ================================================
-     ABOUT / BIO
+     TICKER — Scrolling identity strip
      ================================================ -->
-<section id="about" class="section">
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open // Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open // Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open // Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open //&nbsp;</span><span>Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open // Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open // Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open // Zero Cee // DJ · Producer // House — Techno // Switzerland // Bookings Open //&nbsp;</span>
+  </div>
+</div>
+
+<!-- ================================================
+     ABOUT / BIO — Brutalist Split Layout
+     ================================================ -->
+<section id="about" class="section" data-watermark="BIO" aria-labelledby="about-title">
   <div class="container">
+    <span class="section-label mono" data-index="01">The Artist</span>
+    <h2 id="about-title" class="section-title mono">About Zero Cee</h2>
+    
     <div class="about-grid">
-
       <div class="about-image-wrap">
-        <img src="About.png" alt="Zero Cee" class="about-photo">
-        <div class="about-glow" aria-hidden="true"></div>
-      </div>
-
+        <img src="About.jpg" alt="Zero Cee performing" class="about-photo" loading="eager">
+        </div>
+      
       <div class="about-text">
-        <span class="section-label">The Artist</span>
-        <h2 class="section-title">About Zero Cee</h2>
-
         <p>Zero Cee is a DJ and producer based in Switzerland, known for pushing sonic boundaries and delivering high-energy sets that keep dancefloors moving from first track to last.</p>
         <p>With a deep passion for electronic music, Zero Cee blends genres seamlessly — weaving together driving rhythms, hypnotic melodies, and raw energy into an unforgettable experience that transcends the ordinary.</p>
         <p>From intimate club nights to open-air stages, every set is a carefully crafted journey, shaped by the moment, the crowd, and the music that moves him.</p>
-
+        
         <div class="about-stats">
-            <div class="stat">
-            <span class="stat-num">20+</span>
-            <span class="stat-label">Shows</span>
+          <div class="stat">
+            <span class="stat-num mono">20+</span>
+            <span class="stat-label mono">Shows</span>
           </div>
           <div class="stat">
-            <span class="stat-num">3+</span>
-            <span class="stat-label">Years</span>
+            <span class="stat-num mono">3+</span>
+            <span class="stat-label mono">Years</span>
           </div>
           <div class="stat">
-            <span class="stat-num">CH</span>
-            <span class="stat-label">Based</span>
+            <span class="stat-num mono">CH</span>
+            <span class="stat-label mono">Based</span>
           </div>
         </div>
-
+        
         <div class="about-links">
           <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Instagram</a>
           <a href="https://www.tiktok.com/@zero_cee_ch" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">TikTok</a>
           <a href="https://soundcloud.com/siro-cescutti" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">SoundCloud</a>
         </div>
       </div>
-
     </div>
   </div>
 </section>
 
 <!-- ================================================
-     GALLERY
-     To add/update photos: drop image files into the /photos
-     folder, then edit the PHOTOS array at the top of script.js.
+     GALLERY — Brutalist Carousel
      ================================================ -->
-<section id="gallery" class="section">
+<section id="gallery" class="section" data-watermark="VISUAL" aria-labelledby="gallery-title">
   <div class="container">
-    <span class="section-label">Visuals</span>
-    <h2 class="section-title">Gallery</h2>
-
+    <span class="section-label mono" data-index="02">Visuals</span>
+    <h2 id="gallery-title" class="section-title mono">Gallery</h2>
+    
     <div class="carousel-wrap">
-      <div class="carousel" id="carousel">
+      <div class="carousel" id="carousel" role="region" aria-label="Photo gallery">
         <div class="carousel-track" id="carousel-track"></div>
-
+        
         <button type="button" class="carousel-arrow carousel-arrow-prev" id="carousel-prev" aria-label="Previous photo">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
         </button>
         <button type="button" class="carousel-arrow carousel-arrow-next" id="carousel-next" aria-label="Next photo">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
-
+        
         <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Choose photo"></div>
       </div>
-      <div class="carousel-glow" aria-hidden="true"></div>
     </div>
   </div>
 </section>
 
 <!-- ================================================
-     EVENTS
+     EVENTS — Brutalist List
      ================================================ -->
-<section id="events" class="section section-dark">
+<section id="events" class="section" data-watermark="STAGE" aria-labelledby="events-title">
   <div class="container">
-    <span class="section-label">Live</span>
-    <h2 class="section-title">Upcoming Events</h2>
+    <span class="section-label mono" data-index="03">Live</span>
+    <h2 id="events-title" class="section-title mono">Upcoming Events</h2>
     <div id="events-list" class="events-list" role="list"></div>
     <p id="events-empty" class="events-empty" hidden>
       No upcoming events scheduled. Check back soon, or follow on socials for announcements.
@@ -157,46 +169,33 @@
 </section>
 
 <!-- ================================================
-     MUSIC / MIXES
+     MUSIC / MIXES — Brutalist Cards
      ================================================ -->
-<section id="music" class="section">
+<section id="music" class="section" data-watermark="AUDIO" aria-labelledby="music-title">
   <div class="container">
-    <span class="section-label">Sound</span>
-    <h2 class="section-title">Mixes &amp; Tracks</h2>
-
+    <span class="section-label mono" data-index="04">Sound</span>
+    <h2 id="music-title" class="section-title mono">Mixes &amp; Tracks<span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></h2>
+    
     <div class="music-grid">
-
-      <!--
-        SoundCloud embeds load only after the visitor clicks — this keeps the site
-        from contacting SoundCloud's servers (and letting it set cookies) until
-        there's been a clear consenting action. See initMusicFacades() in script.js.
-
-        EMBED 1 — SoundCloud or Mixcloud
-        To get your embed code:
-          SoundCloud: Go to track/set → Share → Embed → copy the <iframe> code
-          Mixcloud:   Go to set → Share → Embed → copy the <iframe> code
-        Then delete the placeholder div and paste your iframe here.
-      -->
       <div class="music-card">
-        <button type="button" class="music-facade" data-track-id="2344163609" data-track-title="LOVE GOT THE MUSIC - ZERO CEE" data-track-url="https://soundcloud.com/siro-cescutti/love-got-the-music-zero-cee" aria-label="Load SoundCloud player and play LOVE GOT THE MUSIC - ZERO CEE">
-          <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
-          <span class="music-facade-title">LOVE GOT THE MUSIC - ZERO CEE</span>
+        <button type="button" class="music-facade" data-track-id="2359140944" data-track-title="KRAFTWERK ZH FULL SET - ZERO CEE - FREE DOWNLOAD" data-track-url="https://soundcloud.com/siro-cescutti/kraftwerk-zh-full-set-zero-cee" aria-label="Load SoundCloud player and play KRAFTWERK ZH FULL SET - ZERO CEE - FREE DOWNLOAD">
+          <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          <span class="music-facade-title">KRAFTWERK ZH FULL SET — ZERO CEE ( FREE DL )</span>
           <span class="music-facade-hint">Click to load player from SoundCloud</span>
         </button>
       </div>
-
+      
       <div class="music-card">
         <button type="button" class="music-facade" data-track-id="2356811561" data-track-title="SELECTED HOME - ZERO CEE ( FREE DOWNLOAD )" data-track-url="https://soundcloud.com/siro-cescutti/selected-home-zero-cee-free" aria-label="Load SoundCloud player and play SELECTED HOME - ZERO CEE ( FREE DOWNLOAD )">
-          <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
-          <span class="music-facade-title">SELECTED HOME - ZERO CEE ( FREE DOWNLOAD )</span>
+          <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
+          <span class="music-facade-title">SELECTED HOME — ZERO CEE ( FREE DL )</span>
           <span class="music-facade-hint">Click to load player from SoundCloud</span>
         </button>
       </div>
-
     </div>
-
+    
     <div class="music-social-row">
-      <span class="music-social-label">More on</span>
+      <span class="music-social-label mono">More on</span>
       <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Instagram</a>
       <a href="https://www.tiktok.com/@zero_cee_ch" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">TikTok</a>
       <a href="https://soundcloud.com/siro-cescutti" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">SoundCloud</a>
@@ -205,32 +204,43 @@
 </section>
 
 <!-- ================================================
-     BOOKING
+     BOOKING CTA TICKER — clickable strip
      ================================================ -->
-<section id="booking" class="section section-dark">
+<a href="#booking" class="ticker ticker-accent" aria-label="Book Zero Cee now">
+  <div class="ticker-track ticker-track-reverse">
+    <span aria-hidden="true">Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide //&nbsp;</span><span aria-hidden="true">Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide // Book Now // Zero Cee // Available Worldwide //&nbsp;</span>
+  </div>
+</a>
+
+<!-- ================================================
+     BOOKING — Brutalist Form
+     ================================================ -->
+<section id="booking" class="section" data-watermark="CONTACT" aria-labelledby="booking-title">
   <div class="container">
-    <span class="section-label">Contact</span>
-    <h2 class="section-title">Book Zero Cee</h2>
+    <span class="section-label mono" data-index="05">Contact</span>
+    <h2 id="booking-title" class="section-title mono">Book Zero Cee</h2>
     <p class="section-sub">For bookings, collaborations, or general enquiries — fill out the form below and we'll get back to you promptly.</p>
-
+    
     <div class="booking-grid">
-
-      <div data-fs-success style="display: none; padding: 1rem; margin-bottom: 2rem; background: #10b981; color: white; border-radius: 0.5rem; text-align: center;">
-        Thanks for your inquiry! We'll be in touch within 24-48 hours.
-      </div>
-      <div data-fs-error style="display: none; padding: 1rem; margin-bottom: 2rem; background: #ef4444; color: white; border-radius: 0.5rem;"></div>
-
       <form class="booking-form" id="booking-form" novalidate>
+        <div data-fs-success class="form-message form-message--success" hidden>
+          Thanks for your inquiry! We'll be in touch within 24–48 hours.
+        </div>
+        <div data-fs-error class="form-message form-message--error" hidden></div>
+        
         <div class="form-row">
           <div class="form-group">
             <label for="name">Your Name <span aria-hidden="true">*</span></label>
             <input type="text" id="name" name="name" placeholder="Jane Smith" required autocomplete="name" data-fs-field>
+            <div class="form-error-msg">Name is required</div>
           </div>
           <div class="form-group">
             <label for="email">Email Address <span aria-hidden="true">*</span></label>
             <input type="email" id="email" name="email" placeholder="jane@venue.com" required autocomplete="email" data-fs-field>
+            <div class="form-error-msg">Valid email is required</div>
           </div>
         </div>
+        
         <div class="form-row">
           <div class="form-group">
             <label for="event-type">Event Type <span aria-hidden="true">*</span></label>
@@ -247,36 +257,41 @@
               </select>
               <svg class="select-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
+            <div class="form-error-msg">Event type is required</div>
           </div>
           <div class="form-group">
             <label for="event-date">Event Date <span aria-hidden="true">*</span></label>
             <input type="date" id="event-date" name="event-date" required data-fs-field>
+            <div class="form-error-msg">Event date is required</div>
           </div>
         </div>
+        
         <div class="form-group">
           <label for="venue">Venue / Location <span aria-hidden="true">*</span></label>
           <input type="text" id="venue" name="venue" placeholder="Club XYZ, Zurich, Switzerland" required data-fs-field>
+          <div class="form-error-msg">Venue is required</div>
         </div>
+        
         <div class="form-group">
           <label for="message">Additional Details</label>
           <textarea id="message" name="message" rows="5" placeholder="Expected attendance, set duration, genre preference, technical rider notes…" data-fs-field></textarea>
         </div>
+        
         <div class="form-group form-checkbox">
-          <label for="consent">
+          <label>
             <input type="checkbox" id="consent" name="consent" required data-fs-field>
             <span>I agree to the <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a> and consent to my data being processed</span>
           </label>
           <div class="form-error-msg">You must agree to the Privacy Policy to submit</div>
         </div>
-
+        
         <button type="submit" class="btn btn-primary btn-full" id="submit-btn" data-fs-submit-btn>
           Send Booking Enquiry
         </button>
-        <p class="form-note">* Required. We typically respond within 24–48 hours.</p>
-
+        <p class="form-note mono">* Required. We typically respond within 24–48 hours.</p>
       </form>
-
-      <aside class="booking-info">
+      
+      <aside class="booking-info" aria-label="Contact information">
         <div class="info-card">
           <h3>Direct Contact</h3>
           <p>For urgent enquiries:</p>
@@ -294,7 +309,7 @@
             <li>
               <a href="https://www.tiktok.com/@zero_cee_ch" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.87a8.23 8.23 0 0 0 4.84 1.55V7a4.85 4.85 0 0 1-1.07-.31z"/></svg>
-                Tiktok
+                TikTok
               </a>
             </li>
             <li>
@@ -311,19 +326,18 @@
           <p class="info-note">Available for shows worldwide</p>
         </div>
       </aside>
-
     </div>
   </div>
 </section>
 
 <!-- ================================================
-     FOOTER
+     FOOTER — Brutalist Footer
      ================================================ -->
-<footer class="footer">
+<footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer-inner">
       <div class="footer-top">
-        <div class="footer-logo">ZERO CEE</div>
+        <div class="footer-logo mono">ZERO CEE</div>
         <nav class="footer-socials" aria-label="Social media">
           <a href="https://www.instagram.com/zerocee.music/" target="_blank" rel="noopener noreferrer" aria-label="Instagram @zerocee.music">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
@@ -337,8 +351,8 @@
         </nav>
       </div>
       <div class="footer-bottom">
-        <a href="privacy.html" class="footer-privacy">Privacy Policy</a>
-        <p class="footer-copy">&copy; 2026 Zero Cee. All rights reserved.</p>
+        <a href="privacy.html" class="footer-privacy mono">Privacy Policy</a>
+        <p class="footer-copy mono">&copy; 2026 Zero Cee. All rights reserved.</p>
       </div>
     </div>
   </div>

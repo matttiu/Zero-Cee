@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://zerocee.ch/sitemap.xml     
+
+Sitemap: https://www.zerocee.ch/sitemap.xml

@@ -4,10 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Zero Cee — Privacy Policy">
+  <meta name="theme-color" content="#0a0a0a">
   <meta property="og:title" content="Privacy Policy — ZERO CEE">
   <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.zerocee.ch/privacy.html">
   <title>Privacy Policy — ZERO CEE</title>
+  <link rel="canonical" href="https://www.zerocee.ch/privacy.html">
   <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
   <link rel="stylesheet" href="styles.css">
   <style>
     .legal-page {
@@ -16,47 +20,82 @@
       padding: 4rem 1.5rem;
     }
     .legal-page h1 {
-      font-size: 2.5rem;
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.75rem, 5vw, 2.75rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
       margin-bottom: 0.5rem;
-      color: var(--text-primary, #fff);
+      color: var(--text);
     }
     .legal-page .last-updated {
-      color: var(--text-secondary, #999);
-      font-size: 0.9rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-mute);
       margin-bottom: 2rem;
     }
     .legal-page h2 {
-      font-size: 1.5rem;
-      margin-top: 2rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-top: 2.5rem;
       margin-bottom: 1rem;
-      color: var(--text-primary, #fff);
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
     }
     .legal-page p, .legal-page li {
       line-height: 1.8;
-      color: var(--text-secondary, #ccc);
+      color: var(--text-dim);
       margin-bottom: 1rem;
+      font-weight: 300;
     }
     .legal-page ul {
       margin-left: 1.5rem;
       margin-bottom: 1rem;
     }
+    .legal-page strong { color: var(--text); font-weight: 600; }
     .legal-page a {
-      color: var(--accent, #f7c216);
+      color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px solid var(--accent, #f7c216);
+      border-bottom: 1px solid var(--accent);
     }
     .legal-page a:hover {
       opacity: 0.8;
     }
     .back-link {
       display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
       margin-bottom: 2rem;
-      color: var(--accent, #f7c216);
+      color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px solid var(--accent, #f7c216);
+      border: 2px solid var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding: 10px 18px;
+      transition: all 0.15s ease-out;
     }
     .back-link:hover {
-      opacity: 0.8;
+      background: var(--accent);
+      color: var(--text-on-accent);
+      opacity: 1;
+    }
+    .privacy-hr {
+      border: none;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin: 3rem 0;
+    }
+    .privacy-note {
+      font-size: 0.9rem;
+      color: var(--text-secondary, #999);
     }
   </style>
 </head>
@@ -65,13 +104,13 @@
 <!-- ================================================
      NAVIGATION
      ================================================ -->
-<nav id="navbar">
+<nav id="navbar" role="navigation" aria-label="Main navigation">
   <div class="nav-inner">
-    <a href="index.html#home" class="nav-logo">ZERO CEE</a>
-    <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+    <a href="index.html#home" class="nav-logo" aria-label="Zero Cee Home">ZERO CEE</a>
+    <button type="button" class="nav-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
       <span></span><span></span><span></span>
     </button>
-    <ul class="nav-links" role="list">
+    <ul class="nav-links" id="nav-links" role="list">
       <li><a href="index.html#home">Home</a></li>
       <li><a href="index.html#about">About</a></li>
       <li><a href="index.html#gallery">Gallery</a></li>
@@ -90,7 +129,7 @@
     <a href="index.html" class="back-link">← Back to Home</a>
 
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Last updated: July 10, 2026</p>
+    <p class="last-updated">Last updated: July 16, 2026</p>
 
     <p>Zero Cee ("we," "us," or "our") operates the zerocee.ch website. This page explains our privacy practices, the legal basis for processing, and how we handle your personal data when you use our website and booking form. We are the data controller for the purposes of the GDPR and the Swiss Federal Act on Data Protection (FADP).</p>
 
@@ -104,10 +143,11 @@
       <li>Any additional details or messages you provide</li>
     </ul>
     <p>This information is collected only when you voluntarily submit it. We do not collect any personal data from visitors who simply browse the site without submitting the form.</p>
-    <p><strong>Server & hosting logs:</strong> This website is hosted on GitHub Pages. Like virtually all web hosts, GitHub's servers automatically record standard connection logs for every visitor (IP address, browser/user-agent string, referring page, and timestamp) for security and abuse-prevention purposes. We do not have access to these logs ourselves; they are controlled by GitHub, Inc. and covered by <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub's Privacy Statement</a>.</p>
+    <p><strong>Server &amp; hosting logs:</strong> This website is hosted on GitHub Pages. Like virtually all web hosts, GitHub's servers automatically record standard connection logs for every visitor (IP address, browser/user-agent string, referring page, and timestamp) for security and abuse-prevention purposes. We do not have access to these logs ourselves; they are controlled by GitHub, Inc. and covered by <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub's Privacy Statement</a>.</p>
     <p><strong>Fonts:</strong> All fonts used on this site are self-hosted — they are served directly from our own domain rather than from Google Fonts or any other third-party font service. No font-related requests, and no visitor IP addresses, are ever sent to a font provider.</p>
+    <p><strong>Form helper script (unpkg CDN):</strong> To power the booking form, your browser loads a small helper script from <a href="https://unpkg.com" target="_blank" rel="noopener noreferrer">unpkg.com</a>, a free content-delivery network operated on Cloudflare infrastructure. As with any web request, this transmits technical data (such as your IP address and browser user-agent) to that service when the page loads; this data is processed according to <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare's Privacy Policy</a>. We do not receive any data from this request.</p>
 
-    <h2>2. How We Use Your Data & Legal Basis</h2>
+    <h2>2. How We Use Your Data &amp; Legal Basis</h2>
     <p>We use the information you provide to:</p>
     <ul>
       <li>Process and respond to your booking inquiry</li>
@@ -117,7 +157,7 @@
     </ul>
     <p>The legal basis for this processing is (a) your consent, given when you tick the consent checkbox and submit the form, and (b) our legitimate interest / steps necessary to enter into a contract with you (Art. 6(1)(a) and (b) GDPR). You may withdraw your consent at any time as described in Section 5.</p>
 
-    <h2>3. Data Processing & Formspree</h2>
+    <h2>3. Data Processing &amp; Formspree</h2>
     <p>Your booking form data is processed by <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">Formspree</a>, a third-party form service. Formspree acts as a data processor on our behalf and complies with GDPR and international data protection standards. Your data is transmitted securely to Formspree's servers, where it is temporarily stored before being delivered to our email address.</p>
     <p><strong>International transfer:</strong> Formspree, Inc. is based in the United States. Where your data is transferred outside Switzerland/the EEA, Formspree relies on Standard Contractual Clauses and other safeguards recognized under GDPR and Swiss law to ensure an adequate level of protection. For more details, review their <a href="https://formspree.io/legal/privacy-policy/" target="_blank" rel="noopener noreferrer">privacy policy</a> and <a href="https://formspree.io/legal/data-processing-addendum/" target="_blank" rel="noopener noreferrer">Data Processing Addendum</a>.</p>
 
@@ -141,11 +181,11 @@
     <h2>6. Security</h2>
     <p>Your data is transmitted securely via HTTPS encryption. Formspree uses industry-standard security measures to protect your information from unauthorized access, alteration, or disclosure. No method of electronic transmission or storage is 100% secure, and we cannot guarantee absolute security.</p>
 
-    <h2>7. Embedded Content & Third-Party Links</h2>
+    <h2>7. Embedded Content &amp; Third-Party Links</h2>
     <p>Our website contains links to external services (Instagram, TikTok, SoundCloud). These third parties have their own privacy policies, and we are not responsible for their data practices.</p>
     <p><strong>SoundCloud player embeds:</strong> The Music section of this site lets you stream tracks via SoundCloud's player. To protect your privacy, the player is <strong>not</strong> loaded automatically when you visit the page — you'll see a static preview (track title and a play button) that makes no connection to SoundCloud. Only if you click play does your browser load SoundCloud's embedded player (an <code>&lt;iframe&gt;</code> from soundcloud.com), which may then set its own cookies and process your IP address and other technical data according to <a href="https://soundcloud.com/pages/privacy" target="_blank" rel="noopener noreferrer">SoundCloud's Privacy Policy</a>. This connection happens independently of us — we do not receive any data from it. If you prefer to avoid it entirely, you can visit our tracks directly on <a href="https://soundcloud.com/siro-cescutti" target="_blank" rel="noopener noreferrer">SoundCloud</a> instead of clicking play on this site.</p>
 
-    <h2>8. Cookies & Tracking Technologies</h2>
+    <h2>8. Cookies &amp; Tracking Technologies</h2>
     <p>We do not set any cookies, analytics scripts, pixels, or tracking technology of our own, and we do not use local storage to track you. Two categories of third-party cookies may still reach your browser while using this site, set directly by those third parties and outside our control:</p>
     <ul>
       <li>Formspree may set cookies while processing your form submission — see their privacy policy for details.</li>
@@ -169,9 +209,9 @@
       <strong>Location:</strong> Switzerland
     </p>
 
-    <hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 3rem 0;">
+    <hr class="privacy-hr">
 
-    <p style="font-size: 0.9rem; color: var(--text-secondary, #999);">This privacy policy complies with the EU General Data Protection Regulation (GDPR) and Swiss Federal Act on Data Protection (FADP).</p>
+    <p class="privacy-note">This privacy policy complies with the EU General Data Protection Regulation (GDPR) and Swiss Federal Act on Data Protection (FADP).</p>
 
   </div>
 </section>
