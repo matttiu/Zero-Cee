@@ -61,7 +61,6 @@ const PHOTOS = [
   'photos/photo6.jpg',
   'photos/photo7.jpg',
   'photos/photo8.jpg',
-  'photos/photo9.jpg',
 ];
 // ============================================================
 
@@ -113,7 +112,7 @@ function renderEvents() {
       </div>
       <div class="event-action">
         ${ev.tickets
-          ? `<a href="${ev.tickets}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Tickets &rarr;</a>`
+          ? `<a href="${escHtml(ev.tickets)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Tickets &rarr;</a>`
           : `<span class="event-tba">TBA</span>`
         }
       </div>
@@ -121,6 +120,68 @@ function renderEvents() {
     list.appendChild(item);
   });
 }
+
+/* ---- Skeleton loaders ----
+   Overlays a shimmering placeholder on top of an image (or iframe) until
+   it finishes loading. The host element must be position:relative. */
+function attachSkeleton(media, label) {
+  const host = media.parentElement;
+  if (!host) return;
+  // Already loaded from cache — nothing to cover.
+  if (media.tagName === 'IMG' && media.complete && media.naturalWidth > 0) return;
+
+  host.classList.add('img-loading');
+  const sk = document.createElement('div');
+  sk.className = 'img-skeleton';
+  sk.dataset.label = label;
+  host.appendChild(sk);
+
+  const done = ok => {
+    host.classList.remove('img-loading');
+    if (ok) {
+      sk.classList.add('is-done');
+      setTimeout(() => sk.remove(), 450);
+    } else {
+      sk.classList.add('is-failed');
+      sk.dataset.label = 'No Signal';
+    }
+  };
+  media.addEventListener('load', () => done(true), { once: true });
+  media.addEventListener('error', () => done(false), { once: true });
+
+  // Iframe fallback: some browsers don't fire load reliably.
+  // After 5s assume it's loaded and fade skeleton out.
+  if (media.tagName === 'IFRAME') {
+    setTimeout(() => {
+      if (sk.parentElement === host) {
+        done(true);
+      }
+    }, 5000);
+  }
+}
+
+
+/* ---- Scroll progress bar (navbar bottom edge) ---- */
+function initScrollProgress() {
+  const bar = document.getElementById('scroll-progress');
+  if (!bar) return;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
+  };
+  const onScroll = () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(update);
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll, { passive: true });
+  update();
+}
+
 
 function escHtml(str) {
   return String(str)
@@ -156,6 +217,7 @@ function initCarousel() {
     slide.className = 'carousel-slide';
     slide.innerHTML = `<img src="${escHtml(src)}" alt="Zero Cee — photo ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
     track.appendChild(slide);
+    attachSkeleton(slide.querySelector('img'), `IMG_${String(i + 1).padStart(2, '0')}`);
 
     const dot = document.createElement('button');
     dot.type = 'button';
@@ -283,7 +345,7 @@ function initParticles() {
     resizeTimer = setTimeout(resize, 150);
   });
 
-  // Pull accent colours from CSS variables
+  // Pull accent colour from CSS variables
   function hexToRgb(hex) {
     hex = hex.trim().replace('#', '');
     if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
@@ -291,8 +353,10 @@ function initParticles() {
     return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
   }
   const cssVars  = getComputedStyle(document.documentElement);
-  const [cr, cg, cb] = hexToRgb(cssVars.getPropertyValue('--cyan').trim()   || '#f7c216');
-  const [pr, pg, pb] = hexToRgb(cssVars.getPropertyValue('--purple').trim() || '#df3165');
+  const [ar, ag, ab] = hexToRgb(cssVars.getPropertyValue('--accent').trim()   || '#e85d04');
+  // Use accent for both (monochrome industrial look)
+  const cr = ar, cg = ag, cb = ab;
+  const pr = ar, pg = ag, pb = ab;
 
   const HORIZ = 20;   // horizontal grid lines
   const VERT  = 14;   // vertical grid lines
@@ -477,13 +541,26 @@ function initForm() {
   const successEl = grid?.querySelector('[data-fs-success]');
   const errorEl   = grid?.querySelector('[data-fs-error]');
   const origText  = btn.textContent;
-  const consentField = document.getElementById('consent');
 
-  form.addEventListener('submit', (e) => {
-    if (!consentField?.checked) {
+  // The form uses novalidate, so check every required field ourselves and
+  // surface the styled .form-error-msg hints instead of browser bubbles.
+  // Registered on document in the capture phase so it runs BEFORE Formspree's
+  // own submit handler (the deferred lib registers earlier than DOMContentLoaded)
+  // and can block the network request entirely when fields are invalid.
+  document.addEventListener('submit', (e) => {
+    if (e.target !== form) return;
+
+    let firstInvalid = null;
+    form.querySelectorAll('[required]').forEach(field => {
+      const valid = field.type === 'checkbox' ? field.checked : field.checkValidity();
+      const group = field.closest('.form-group');
+      group?.classList.toggle('has-error', !valid);
+      if (!valid && !firstInvalid) firstInvalid = field;
+    });
+    if (firstInvalid) {
       e.preventDefault();
-      const group = consentField?.closest('.form-group');
-      group?.classList.add('has-error');
+      e.stopPropagation();
+      firstInvalid.focus();
       return;
     }
 
@@ -503,7 +580,7 @@ function initForm() {
     }, 250);
 
     setTimeout(() => clearInterval(poll), 30000);
-  });
+  }, true);
 
   // Clear error state on input
   form.querySelectorAll('[required]').forEach(field => {
@@ -540,7 +617,12 @@ function initMusicFacades() {
       credit.style.cssText = 'font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif; font-weight: 100;';
       credit.innerHTML = `<a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="${trackUrl}" title="${escHtml(trackTitle)}" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">${escHtml(trackTitle)}</a>`;
 
-      btn.replaceWith(iframe, credit);
+      // Wrap iframe so a skeleton can cover it until SoundCloud loads
+      const embed = document.createElement('div');
+      embed.className = 'music-embed';
+      embed.appendChild(iframe);
+      btn.replaceWith(embed, credit);
+      attachSkeleton(iframe, 'Loading Player');
     });
   });
 }
@@ -555,17 +637,25 @@ document.addEventListener('DOMContentLoaded', () => {
   initActiveNav();
   initForm();
   initMusicFacades();
+  initScrollProgress();
+
+  // Skeleton for the about photo
+  const aboutPhoto = document.querySelector('.about-photo');
+  if (aboutPhoto) attachSkeleton(aboutPhoto, 'Artist_Bio');
 
   // Tag reveal elements in each section
   document.querySelectorAll(`
-    #about .about-grid,
+    #about .about-image-wrap,
+    #about .about-text,
     #gallery .section-label, #gallery .section-title, #gallery .carousel,
-    #events .section-label, #events .section-title,
+    #events .section-label, #events .section-title, #events .events-list,
     #music .section-label, #music .section-title, #music .music-grid, #music .music-social-row,
-    #booking .section-label, #booking .section-title, #booking .section-sub, #booking .booking-grid
+    #booking .section-label, #booking .section-title, #booking .section-sub, #booking .booking-form, #booking .booking-info
   `).forEach((el, i) => {
     el.classList.add('reveal');
     if (i > 0 && i % 3 === 0) el.classList.add('reveal-delay-1');
+    else if (i > 0 && i % 3 === 1) el.classList.add('reveal-delay-2');
+    else if (i > 0 && i % 3 === 2) el.classList.add('reveal-delay-3');
   });
 
   initReveal();
