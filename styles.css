@@ -286,14 +286,27 @@ ul[role="list"] { list-style: none; }
   top: 0; left: 0; right: 0;
   z-index: 1000;
   height: var(--nav-h);
+  border-bottom: 2px solid var(--border);
+  transition: border-color var(--transition);
+}
+
+/* Blur lives on a pseudo-element, not #navbar itself — backdrop-filter on
+   #navbar would make it the containing block for the fixed-position mobile
+   menu, shrinking it to the navbar's own height instead of the viewport. */
+#navbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: rgba(10, 10, 10, 0.92);
   backdrop-filter: blur(8px);
-  border-bottom: 2px solid var(--border);
-  transition: border-color var(--transition), background var(--transition);
+  transition: background var(--transition);
 }
 
 #navbar.scrolled {
   border-bottom-color: var(--border-strong);
+}
+#navbar.scrolled::before {
   background: rgba(10, 10, 10, 0.98);
 }
 
@@ -1081,14 +1094,14 @@ ul[role="list"] { list-style: none; }
     display: none !important;
     position: fixed; inset: var(--nav-h) 0 0;
     background: var(--bg);
-    flex-direction: column; align-items: flex-start;
+    flex-direction: column; align-items: stretch;
     padding: var(--gap-lg) var(--gap);
     border-top: 2px solid var(--border);
     overflow-y: auto; z-index: 999;
-    height: calc(100vh - var(--nav-h)); max-height: calc(100vh - var(--nav-h));
   }
   .nav-links.open { display: flex !important; }
   .nav-links a {
+    display: block;
     font-size: 1.1rem;
     letter-spacing: 0.1em;
     padding: 18px 0;
@@ -1099,19 +1112,16 @@ ul[role="list"] { list-style: none; }
     transition: opacity 0.25s, transform 0.25s;
   }
   .nav-links.open a { opacity: 1; transform: none; }
-  .nav-links.open a:nth-child(1) { transition-delay: 0.05s; }
-  .nav-links.open a:nth-child(2) { transition-delay: 0.1s; }
-  .nav-links.open a:nth-child(3) { transition-delay: 0.15s; }
-  .nav-links.open a:nth-child(4) { transition-delay: 0.2s; }
-  .nav-links.open a:nth-child(5) { transition-delay: 0.25s; }
-  .nav-links.open a:nth-child(6) { transition-delay: 0.3s; }
+  .nav-links.open li:nth-child(1) a { transition-delay: 0.05s; }
+  .nav-links.open li:nth-child(2) a { transition-delay: 0.1s; }
+  .nav-links.open li:nth-child(3) a { transition-delay: 0.15s; }
+  .nav-links.open li:nth-child(4) a { transition-delay: 0.2s; }
+  .nav-links.open li:nth-child(5) a { transition-delay: 0.25s; }
+  .nav-links.open li:nth-child(6) a { transition-delay: 0.3s; }
   .nav-links .nav-cta {
+    display: flex;
     width: 100%;
     justify-content: center;
-    margin-top: var(--gap);
-    border-top: 2px solid var(--border);
-    padding-top: var(--gap);
-    border-bottom: none;
   }
   .nav-toggle { display: flex !important; }
 
