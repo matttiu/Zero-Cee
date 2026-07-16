@@ -1,2 +1,7 @@
 upkeep.md
 .claude
+
+# local-only tooling for tools/optimize-images.mjs
+node_modules/
+package.json
+package-lock.json

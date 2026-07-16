@@ -12,8 +12,13 @@
   <meta property="og:image" content="https://www.zerocee.ch/About.jpg">
   <title>ZERO CEE</title>
   <link rel="canonical" href="https://www.zerocee.ch/">
-  <link rel="icon" href="icon.png">
-  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon-180.png">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <!-- Preload fonts so the hero text doesn't swap after load -->
+  <link rel="preload" href="fonts/SpaceMono-700-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/SpaceMono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/SpaceGrotesk-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -96,7 +101,8 @@
     
     <div class="about-grid">
       <div class="about-image-wrap">
-        <img src="About.jpg" alt="Zero Cee performing" class="about-photo" loading="eager">
+        <img src="About.webp" width="943" height="1263"
+          alt="Zero Cee performing" class="about-photo" loading="lazy" decoding="async">
         </div>
       
       <div class="about-text">
