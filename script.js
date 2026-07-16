@@ -47,20 +47,22 @@ const EVENTS = [
 // ============================================================
 // GALLERY PHOTOS — Edit this array to manage the carousel.
 //
-// 1. Drop your image files into the /photos folder.
-// 2. List their filenames below, in the order they should appear.
+// 1. Drop your .jpg files into the /photos folder.
+// 2. Run `node tools/optimize-images.mjs` (see upkeep.md) — it
+//    turns each .jpg into a small, fast .webp file.
+// 3. List the filenames below, in the order they should appear.
 //
 // Works best with up to about 10 photos.
 // ============================================================
 const PHOTOS = [
-  'photos/photo1.jpg',
-  'photos/photo2.jpg',
-  'photos/photo3.jpg',
-  'photos/photo4.jpg',
-  'photos/photo5.jpg',
-  'photos/photo6.jpg',
-  'photos/photo7.jpg',
-  'photos/photo8.jpg',
+  'photos/photo1.webp',
+  'photos/photo2.webp',
+  'photos/photo3.webp',
+  'photos/photo4.webp',
+  'photos/photo5.webp',
+  'photos/photo6.webp',
+  'photos/photo7.webp',
+  'photos/photo8.webp',
 ];
 // ============================================================
 
@@ -215,7 +217,7 @@ function initCarousel() {
   PHOTOS.forEach((src, i) => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
-    slide.innerHTML = `<img src="${escHtml(src)}" alt="Zero Cee — photo ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}">`;
+    slide.innerHTML = `<img src="${escHtml(src)}" alt="Zero Cee — photo ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">`;
     track.appendChild(slide);
     attachSkeleton(slide.querySelector('img'), `IMG_${String(i + 1).padStart(2, '0')}`);
 
@@ -244,13 +246,9 @@ function initCarousel() {
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
-  // Slide transitions and the autoplay clock are deliberately independent:
-  // goTo() only guards against overlapping transitions (so a slide always
-  // plays out at full length instead of being cut short and re-triggered
-  // by a fast follow-up click). Autoplay resets happen separately in the
-  // manual* wrappers below, so a click always resets the autoplay clock
-  // even when goTo ignores it — otherwise a focus change from that same
-  // click could stop the timer with nothing left to restart it.
+  // goTo() ignores clicks while a slide transition is still playing.
+  // Autoplay resets happen separately in the manual* wrappers so a click
+  // always resets the autoplay clock, even when goTo ignores it.
   let unlockTimer = null;
   function goTo(i) {
     if (animating) return;
@@ -287,9 +285,7 @@ function initCarousel() {
   function restartAutoplay() {
     stopAutoplay();
     startAutoplay();
-    // Restart the active dot's fill animation so it always reflects the
-    // real timer, even on a click that landed mid-transition and left
-    // render() (and the fill it triggers) untouched.
+    // Restart the active dot's fill animation so it matches the timer.
     const activeDot = dots[index];
     if (activeDot) {
       activeDot.classList.remove('active');
@@ -330,6 +326,7 @@ function initCarousel() {
 function initParticles() {
   const canvas = document.getElementById('particles');
   if (!canvas) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const ctx = canvas.getContext('2d');
   let W, H;
 
@@ -456,9 +453,27 @@ function initParticles() {
     ctx.fillStyle = vig;
     ctx.fillRect(0, 0, W, H);
 
+    if (running) requestAnimationFrame(draw);
+  }
+
+  // Only animate while the hero is on screen / the tab is visible.
+  let running = false;
+  function start() {
+    if (running) return;
+    running = true;
     requestAnimationFrame(draw);
   }
-  draw();
+  function stop() { running = false; }
+
+  const visObs = new IntersectionObserver(entries => {
+    entries.forEach(e => (e.isIntersecting ? start() : stop()));
+  });
+  visObs.observe(canvas);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stop();
+    else if (canvas.getBoundingClientRect().bottom > 0) start();
+  });
 }
 
 
@@ -542,11 +557,9 @@ function initForm() {
   const errorEl   = grid?.querySelector('[data-fs-error]');
   const origText  = btn.textContent;
 
-  // The form uses novalidate, so check every required field ourselves and
-  // surface the styled .form-error-msg hints instead of browser bubbles.
-  // Registered on document in the capture phase so it runs BEFORE Formspree's
-  // own submit handler (the deferred lib registers earlier than DOMContentLoaded)
-  // and can block the network request entirely when fields are invalid.
+  // Validate required fields ourselves (form is novalidate). Registered in
+  // the capture phase so it runs before Formspree's own submit handler and
+  // can block the request when fields are invalid.
   document.addEventListener('submit', (e) => {
     if (e.target !== form) return;
 
