@@ -33,11 +33,11 @@ const EVENTS = [
     tickets: ""
   },
   {
-    date:    "Date TBA",
-    venue:   "Venue TBA",
-    city:    "City TBA",
-    country: "Country TBA",
-    type:    "Type TBA",
+    date:    "2026-08-14",
+    venue:   "Club04",
+    city:    "Zurich",
+    country: "CH",
+    type:    "Bounce | Hardtechno",
     tickets: ""
   }
 ];
