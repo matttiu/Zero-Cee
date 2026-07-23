@@ -38,7 +38,7 @@ const EVENTS = [
     city:    "Zurich",
     country: "CH",
     type:    "Bounce | Hardtechno",
-    tickets: ""
+    tickets: "https://eventfrog.ch/de/p/partys/house-techno/blackout-x-nachtzugang-7484990940450445939.html"
   }
 ];
 // ============================================================
