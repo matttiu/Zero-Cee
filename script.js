@@ -39,7 +39,39 @@ const EVENTS = [
     country: "CH",
     type:    "Bounce | Hardtechno",
     tickets: "https://eventfrog.ch/de/p/partys/house-techno/blackout-x-nachtzugang-7484990940450445939.html"
-  }
+  },
+  {
+    date:     "2026-08-21",
+    venue:    "Private",
+    city:     "Maur",
+    country:  "CH",
+    type:     "Invite Only",
+    tickets:  ""
+  },
+  {
+    date:    "2026-08-22",
+    venue:   "Friends Party",
+    city:    "Zurich",
+    country: "CH",
+    type:    "Invite Only",
+    tickets: ""
+  },
+  {
+    date:    "2026-08-28",
+    venue:   "Rooftop Private Party",
+    city:    "Zurich",
+    country: "CH",
+    type:    "Rooftop Private",
+    tickets: ""
+  },
+  {
+    date:    "2026-09-26",
+    venue:   "Private Homeparty",
+    city:    "N/A",
+    country: "CH",
+    type:    "Invite Only",
+    tickets: ""
+  },
 ];
 // ============================================================
 
