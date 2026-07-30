@@ -72,6 +72,14 @@ const EVENTS = [
     type:    "Invite Only",
     tickets: ""
   },
+  {
+    date:    "2026-08-07",
+    venue:   "Le Café",
+    city:    "Zürich",
+    country: "CH",
+    type:    "Bar",
+    tickets: ""
+  },
 ];
 // ============================================================
 
