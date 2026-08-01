@@ -249,7 +249,7 @@ function initCarousel() {
   }
 
   const AUTOPLAY_MS   = 5000;
-  const TRANSITION_MS = 600; // keep in sync with .carousel-track transition duration in styles.css
+  const TRANSITION_MS = 400; // keep in sync with .carousel-track transition duration in styles.css
   let index      = 0;
   let timer      = null;
   let animating  = false;
@@ -286,17 +286,23 @@ function initCarousel() {
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
   }
 
-  // goTo() ignores clicks while a slide transition is still playing.
-  // Autoplay resets happen separately in the manual* wrappers so a click
-  // always resets the autoplay clock, even when goTo ignores it.
+  // goTo() ignores clicks while a slide transition is still playing, so a
+  // slide always plays out at full length instead of being cut short and
+  // re-triggered by a fast follow-up tap. It reports back whether it acted;
+  // the manual* wrappers only touch autoplay (which forces a layout reflow
+  // to restart the dot-fill animation) when a slide actually changed —
+  // otherwise spamming a button while ignored taps pile up forces that
+  // reflow on every tap instead of once per real transition, which is what
+  // made rapid mobile tapping stutter and briefly mis-render the arrows.
   let unlockTimer = null;
   function goTo(i) {
-    if (animating) return;
+    if (animating) return false;
     animating = true;
     clearTimeout(unlockTimer);
     unlockTimer = setTimeout(() => { animating = false; }, TRANSITION_MS + 50);
     index = (i + PHOTOS.length) % PHOTOS.length;
     render();
+    return true;
   }
 
   track.addEventListener('transitionend', e => {
@@ -306,11 +312,11 @@ function initCarousel() {
     }
   });
 
-  function next()  { goTo(index + 1); }
-  function prev()  { goTo(index - 1); }
-  function manualGoTo(i) { goTo(i); restartAutoplay(); }
-  function manualNext()  { next();   restartAutoplay(); }
-  function manualPrev()  { prev();   restartAutoplay(); }
+  function next()  { return goTo(index + 1); }
+  function prev()  { return goTo(index - 1); }
+  function manualGoTo(i) { if (goTo(i)) restartAutoplay(); }
+  function manualNext()  { if (next()) restartAutoplay(); }
+  function manualPrev()  { if (prev()) restartAutoplay(); }
 
   function startAutoplay() {
     if (!multi) return;
