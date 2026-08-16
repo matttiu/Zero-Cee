@@ -257,7 +257,7 @@ function initCarousel() {
   PHOTOS.forEach((src, i) => {
     const slide = document.createElement('div');
     slide.className = 'carousel-slide';
-    slide.innerHTML = `<img src="${escHtml(src)}" alt="Zero Cee — photo ${i + 1}" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">`;
+    slide.innerHTML = `<img src="${escHtml(src)}" alt="Zero Cee — photo ${i + 1}" translate="no" loading="${i === 0 ? 'eager' : 'lazy'}" decoding="async">`;
     track.appendChild(slide);
     attachSkeleton(slide.querySelector('img'), `IMG_${String(i + 1).padStart(2, '0')}`);
 
@@ -667,6 +667,9 @@ function initMusicFacades() {
       iframe.src = `https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/soundcloud%253Atracks%253A${encodeURIComponent(trackId)}&color=%23ff5500&auto_play=true&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true`;
 
       const credit = document.createElement('div');
+      // Brand + track titles must never be machine-translated ("Zero Cee" -> "Null Zentraleuropa")
+      credit.className = 'notranslate';
+      credit.setAttribute('translate', 'no');
       credit.style.cssText = 'font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif; font-weight: 100;';
       credit.innerHTML = `<a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="${trackUrl}" title="${escHtml(trackTitle)}" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">${escHtml(trackTitle)}</a>`;
 
