@@ -343,8 +343,15 @@ function initCarousel() {
   prevBtn?.addEventListener('click', manualPrev);
   nextBtn?.addEventListener('click', manualNext);
 
-  carousel.addEventListener('mouseenter', stopAutoplay);
-  carousel.addEventListener('mouseleave', startAutoplay);
+  // Pause-on-hover must only react to a real mouse. Touch devices emit
+  // synthetic "ghost" mouseenter/mouseleave events to fake :hover, but the
+  // mouseleave half often never fires (or fires much later) after a tap —
+  // so a swipe would restart autoplay via restartAutoplay() only for a
+  // phantom mouseenter from that same touch to immediately kill the timer
+  // again with no mouseleave to revive it, silently freezing the carousel.
+  // Pointer events let us filter to pointerType === 'mouse' and sidestep it.
+  carousel.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') stopAutoplay(); });
+  carousel.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') startAutoplay(); });
   carousel.addEventListener('focusin', stopAutoplay);
   carousel.addEventListener('focusout', startAutoplay);
 
