@@ -646,10 +646,9 @@ ul[role="list"] { list-style: none; }
   display: flex;
   aspect-ratio: 3 / 4;
   transition: transform 0.4s var(--ease);
-  /* Deliberately NOT promoted with will-change/backface-visibility: the track
-     is all 8 slides wide, so a permanent layer means a large backing store on
-     a 3x-DPR phone. The arrows and dots below carry the promotion instead —
-     they are the elements that were flickering, and they are tiny. */
+  /* Don't add will-change/backface-visibility here: the track is as wide as
+     all the slides combined, so a permanent compositing layer would mean a
+     large backing store on a 3x-DPR phone. */
 }
 .carousel-slide { flex: 0 0 100%; width: 100%; height: 100%; }
 .carousel-slide img {
@@ -659,16 +658,10 @@ ul[role="list"] { list-style: none; }
 .carousel-arrow {
   position: absolute;
   top: 50%;
-  /* The flicker: the track gets a temporary compositing layer for the length
-     of each transform transition, and WebKit on iOS pulls the un-promoted
-     arrows that overlap it into a throwaway "overlap" layer, rebuilt and
-     discarded around every slide change. translateZ(0) gives each arrow its
-     own permanent layer and z-index fixes its stacking order above the track,
-     so there is no overlap left for the compositor to re-derive. */
-  transform: translateY(-50%) translateZ(0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-  z-index: 2;
+  transform: translateY(-50%);
+  /* Explicit stacking order: .img-skeleton inside a slide also sits at
+     z-index 2, and the arrows must stay above it. */
+  z-index: 3;
   display: flex; align-items: center; justify-content: center;
   width: 48px; height: 48px;
   border: 2px solid var(--border-strong);
@@ -700,8 +693,7 @@ ul[role="list"] { list-style: none; }
 .carousel-dots {
   position: absolute;
   left: 0; right: 0; bottom: 16px;
-  z-index: 2;
-  transform: translateZ(0);
+  z-index: 3;
   display: flex; justify-content: center; gap: 8px;
 }
 .carousel-dot {
@@ -727,6 +719,10 @@ ul[role="list"] { list-style: none; }
 .carousel-dot.active::after {
   animation: dotFill var(--autoplay-ms, 5000ms) linear forwards;
 }
+/* stopAutoplay() sets .paused on the dots wrapper. Without this the fill kept
+   running after the timer stopped, so the dot read as counting down to a
+   slide change that was never coming. */
+.carousel-dots.paused .carousel-dot.active::after { animation-play-state: paused; }
 @keyframes dotFill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 /* ----- Events: Brutalist List ----- */
@@ -1425,6 +1421,16 @@ section[id] { scroll-margin-top: var(--nav-h); }
   animation: skPulse 1.6s ease-in-out infinite;
 }
 @keyframes skPulse { 50% { opacity: 0.35; } }
+/* A carousel skeleton only animates while its slide is the visible one.
+   All 8 slides get a skeleton at load, and each runs two infinite animations
+   (a full-bleed gradient sweep plus the pulsing label). Running all of them
+   at once saturates the compositor on a high-DPR phone, and the casualty is
+   the overlapping arrows: they drop frames and read as flickering. */
+.carousel-slide:not(.is-active) .img-skeleton::before,
+.carousel-slide:not(.is-active) .img-skeleton::after {
+  animation: none;
+}
+
 .img-skeleton.is-done { opacity: 0; }
 .img-skeleton.is-failed::before { animation: none; }
 .img-skeleton.is-failed::after {

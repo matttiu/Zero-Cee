@@ -270,6 +270,7 @@ function initCarousel() {
     dotsWrap?.appendChild(dot);
   });
 
+  const slides = Array.from(track.children);
   const dots = dotsWrap ? Array.from(dotsWrap.children) : [];
   const multi = PHOTOS.length > 1;
 
@@ -284,16 +285,35 @@ function initCarousel() {
   function render() {
     track.style.transform = `translateX(-${index * 100}%)`;
     dots.forEach((d, i) => d.classList.toggle('active', i === index));
+    // Only the on-screen slide's skeleton is allowed to animate (see
+    // .carousel-slide:not(.is-active) in styles.css).
+    slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
   }
 
-  // goTo() ignores clicks while a slide transition is still playing, so a
+  // The off-screen slides are loading="lazy" and sit inside the carousel's
+  // overflow:hidden, so Safari won't fetch them until the track scrolls them
+  // into view — one slide at a time, 5s apart. Every slide still waiting on
+  // its image holds a skeleton up, so the skeletons only cleared once the
+  // carousel had cycled nearly all the way round. Fetch the whole set as
+  // soon as the carousel is near the viewport instead: the skeletons are
+  // then gone within the first second, and nothing is pulled down early for
+  // visitors who never scroll as far as the gallery.
+  const wakeObs = new IntersectionObserver((entries, o) => {
+    if (!entries.some(e => e.isIntersecting)) return;
+    o.disconnect();
+    slides.forEach(s => {
+      const img = s.querySelector('img');
+      // Flipping lazy -> eager starts the fetch immediately.
+      if (img && img.loading === 'lazy') img.loading = 'eager';
+    });
+  }, { rootMargin: '200px' });
+  wakeObs.observe(carousel);
+
+  // goTo() ignores input while a slide transition is still playing, so a
   // slide always plays out at full length instead of being cut short and
-  // re-triggered by a fast follow-up tap. It reports back whether it acted;
-  // the manual* wrappers only touch autoplay (which forces a layout reflow
-  // to restart the dot-fill animation) when a slide actually changed —
-  // otherwise spamming a button while ignored taps pile up forces that
-  // reflow on every tap instead of once per real transition, which is what
-  // made rapid mobile tapping stutter and briefly mis-render the arrows.
+  // re-triggered by a fast follow-up tap. It reports back whether it acted,
+  // so the manual* wrappers only restart autoplay when a slide really
+  // changed rather than on every ignored tap.
   let unlockTimer = null;
   function goTo(i) {
     if (animating) return false;
@@ -318,8 +338,9 @@ function initCarousel() {
   function manualNext()  { if (next()) restartAutoplay(); }
   function manualPrev()  { if (prev()) restartAutoplay(); }
 
+  let onScreen = true;
   function startAutoplay() {
-    if (!multi) return;
+    if (!multi || !onScreen || document.hidden) return;
     clearInterval(timer); // always clear first — safe to call even if already running
     timer = setInterval(next, AUTOPLAY_MS);
     dotsWrap?.classList.remove('paused');
@@ -332,9 +353,8 @@ function initCarousel() {
     stopAutoplay();
     startAutoplay();
     // Restart the active dot's fill animation so it matches the timer.
-    // Deferred a frame: the forced reflow below otherwise lands in the same
-    // frame that commits the track's transform transition, and iOS Safari
-    // pays for that synchronous layout by dropping the arrows for a frame.
+    // Deferred a frame so the forced reflow below doesn't land in the same
+    // frame that commits the track's transform transition.
     const activeDot = dots[index];
     if (activeDot) {
       requestAnimationFrame(() => {
@@ -345,6 +365,21 @@ function initCarousel() {
       });
     }
   }
+
+  // Autoplay otherwise keeps firing for the whole life of the page — the
+  // gallery is section 02 of 5, so it spent most of its time transforming the
+  // track every 5s for a section nobody was looking at, background tabs
+  // included. Each tick is a style recalc, a paint and a composite. The hero
+  // canvas already gates itself on visibility; this does the same.
+  const playObs = new IntersectionObserver(entries => {
+    onScreen = entries.some(e => e.isIntersecting);
+    if (onScreen) startAutoplay(); else stopAutoplay();
+  });
+  playObs.observe(carousel);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopAutoplay(); else startAutoplay();
+  });
 
   prevBtn?.addEventListener('click', manualPrev);
   nextBtn?.addEventListener('click', manualNext);
@@ -367,13 +402,22 @@ function initCarousel() {
   });
 
   // Touch swipe support
-  let touchStartX = null;
-  track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  let touchStartX = null, touchStartY = null;
+  track.addEventListener('touchstart', e => {
+    touchStartX = e.touches[0].clientX;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
   track.addEventListener('touchend', e => {
     if (touchStartX === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 40) (dx < 0 ? manualNext : manualPrev)();
-    touchStartX = null;
+    const dy = e.changedTouches[0].clientY - touchStartY;
+    // Must be mostly horizontal. Distance alone isn't enough: scrolling the
+    // page past the gallery with a finger on the photo drifts sideways more
+    // than 40px easily, and the carousel would jump a slide as you went by.
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
+      (dx < 0 ? manualNext : manualPrev)();
+    }
+    touchStartX = touchStartY = null;
   }, { passive: true });
 
   render();
