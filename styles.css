@@ -635,12 +635,21 @@ ul[role="list"] { list-style: none; }
   background: var(--bg-card);
   overflow: hidden;
 }
-.carousel:hover { border-color: var(--accent); }
+/* Hover is gated to real pointers. iOS fakes :hover on tap and then leaves it
+   stuck until the next tap elsewhere, so on touch it reads as the border and
+   arrows blinking on and off rather than as hover feedback. */
+@media (hover: hover) and (pointer: fine) {
+  .carousel:hover { border-color: var(--accent); }
+}
 
 .carousel-track {
   display: flex;
   aspect-ratio: 3 / 4;
   transition: transform 0.4s var(--ease);
+  /* Deliberately NOT promoted with will-change/backface-visibility: the track
+     is all 8 slides wide, so a permanent layer means a large backing store on
+     a 3x-DPR phone. The arrows and dots below carry the promotion instead —
+     they are the elements that were flickering, and they are tiny. */
 }
 .carousel-slide { flex: 0 0 100%; width: 100%; height: 100%; }
 .carousel-slide img {
@@ -649,16 +658,38 @@ ul[role="list"] { list-style: none; }
 
 .carousel-arrow {
   position: absolute;
-  top: 50%; transform: translateY(-50%);
+  top: 50%;
+  /* The flicker: the track gets a temporary compositing layer for the length
+     of each transform transition, and WebKit on iOS pulls the un-promoted
+     arrows that overlap it into a throwaway "overlap" layer, rebuilt and
+     discarded around every slide change. translateZ(0) gives each arrow its
+     own permanent layer and z-index fixes its stacking order above the track,
+     so there is no overlap left for the compositor to re-derive. */
+  transform: translateY(-50%) translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  z-index: 2;
   display: flex; align-items: center; justify-content: center;
   width: 48px; height: 48px;
   border: 2px solid var(--border-strong);
   background: var(--bg-elevated);
   color: var(--text-dim);
   cursor: pointer;
-  transition: all var(--transition);
+  /* Named properties, not `all`: `all` includes transform, so any restyle of
+     the arrow re-animates translateY(-50%) from its current value and makes
+     the button jump. */
+  transition: border-color var(--transition), color var(--transition), background-color var(--transition);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
-.carousel-arrow:hover {
+@media (hover: hover) and (pointer: fine) {
+  .carousel-arrow:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-bg);
+  }
+}
+.carousel-arrow:focus-visible {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-bg);
@@ -669,6 +700,8 @@ ul[role="list"] { list-style: none; }
 .carousel-dots {
   position: absolute;
   left: 0; right: 0; bottom: 16px;
+  z-index: 2;
+  transform: translateZ(0);
   display: flex; justify-content: center; gap: 8px;
 }
 .carousel-dot {
@@ -679,8 +712,12 @@ ul[role="list"] { list-style: none; }
   cursor: pointer;
   transition: all var(--transition);
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
-.carousel-dot:hover { background: var(--border-strong); }
+@media (hover: hover) and (pointer: fine) {
+  .carousel-dot:hover { background: var(--border-strong); }
+}
 .carousel-dot.active { width: 36px; background: var(--accent); }
 .carousel-dot::after {
   content: ''; position: absolute; inset: 0;

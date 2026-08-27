@@ -332,11 +332,17 @@ function initCarousel() {
     stopAutoplay();
     startAutoplay();
     // Restart the active dot's fill animation so it matches the timer.
+    // Deferred a frame: the forced reflow below otherwise lands in the same
+    // frame that commits the track's transform transition, and iOS Safari
+    // pays for that synchronous layout by dropping the arrows for a frame.
     const activeDot = dots[index];
     if (activeDot) {
-      activeDot.classList.remove('active');
-      void activeDot.offsetWidth; // force reflow so the animation restarts
-      activeDot.classList.add('active');
+      requestAnimationFrame(() => {
+        if (dots[index] !== activeDot) return; // slide moved on already
+        activeDot.classList.remove('active');
+        void activeDot.offsetWidth; // force reflow so the animation restarts
+        activeDot.classList.add('active');
+      });
     }
   }
 
