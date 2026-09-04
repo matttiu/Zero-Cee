@@ -80,6 +80,14 @@ const EVENTS = [
     type:    "Bar",
     tickets: ""
   },
+  {
+    date: "2026-09-26",
+    venue: "Secret Rave",
+    city: "N/A",
+    country: "CH",
+    type: "N/A",
+    tickets: ""
+  },
 ];
 // ============================================================
 
