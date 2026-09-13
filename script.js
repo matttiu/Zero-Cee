@@ -3,108 +3,39 @@
    ===================================================== */
 
 // ============================================================
-// EVENTS — Edit this array to manage upcoming shows.
-//
-// Each event object:
-//   date:    "YYYY-MM-DD"   (required)
-//   venue:   "Venue Name"   (required)
-//   city:    "City"         (required)
-//   country: "CH"           (2-letter code, e.g. CH, DE, FR, UK)
-//   type:    "Club Night"   (shown as a tag — any text is fine)
-//   tickets: "https://..."  (set to "" or remove if not yet available)
-//
-// Past events are automatically hidden. Add as many as you like.
+// SITE CONTENT — About text, Photos, Events and Music are no longer
+// hardcoded here. They're loaded at runtime from the /content/*.json
+// files (see loadSiteContent() below), which is what the /admin panel
+// edits. These variables are just the in-memory holders.
 // ============================================================
-const EVENTS = [
-  {
-    date:    "2026-07-03",
-    venue:   "Kraftwerk",
-    city:    "Zurich",
-    country: "CH",
-    type:    "Club Night",
-    tickets: "https://eventfrog.ch/de/p/partys/house-techno/nachtzugang-x-blackout-7469385293575024925.html?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn7aCNTmU3KnE548gtq05eZpWlxhI9MfAUR1sUsSoKvEmv6i1DmTC2pLbQghs_aem_Wgl4-U7D2PgmXot4awMvHQs"
-  },
-  {
-    date:    "2026-07-09",
-    venue:   "Private",
-    city:    "Effretikon",
-    country: "CH",
-    type:    "Private/Invite Only",
-    tickets: ""
-  },
-  {
-    date:    "2026-08-14",
-    venue:   "Club04",
-    city:    "Zurich",
-    country: "CH",
-    type:    "Bounce | Hardtechno",
-    tickets: "https://eventfrog.ch/de/p/partys/house-techno/blackout-x-nachtzugang-7484990940450445939.html"
-  },
-  {
-    date:     "2026-08-21",
-    venue:    "Private",
-    city:     "Maur",
-    country:  "CH",
-    type:     "Invite Only",
-    tickets:  ""
-  },
-  {
-    date:    "2026-08-22",
-    venue:   "Friends Party",
-    city:    "Zurich",
-    country: "CH",
-    type:    "Invite Only",
-    tickets: ""
-  },
-  {
-    date:    "2026-08-28",
-    venue:   "Rooftop Private Party",
-    city:    "Zurich",
-    country: "CH",
-    type:    "Rooftop Private",
-    tickets: ""
-  },
-  {
-    date:    "2026-09-26",
-    venue:   "Private Homeparty",
-    city:    "N/A",
-    country: "CH",
-    type:    "Invite Only",
-    tickets: ""
-  },
-  {
-    date:    "2026-08-07",
-    venue:   "Le Café",
-    city:    "Zürich",
-    country: "CH",
-    type:    "Bar",
-    tickets: ""
-  },
-];
-// ============================================================
+let EVENTS = [];
+let PHOTOS = [];
+let ABOUT  = null;
+let MUSIC  = [];
 
+/* ---- Load content from /content/*.json ---- */
+async function loadSiteContent() {
+  const fetchJson = async (path) => {
+    const res = await fetch(path, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Failed to load ${path}: ${res.status}`);
+    return res.json();
+  };
 
-// ============================================================
-// GALLERY PHOTOS — Edit this array to manage the carousel.
-//
-// 1. Drop your .jpg files into the /photos folder.
-// 2. Run `node tools/optimize-images.mjs` (see upkeep.md) — it
-//    turns each .jpg into a small, fast .webp file.
-// 3. List the filenames below, in the order they should appear.
-//
-// Works best with up to about 10 photos.
-// ============================================================
-const PHOTOS = [
-  'photos/photo1.webp',
-  'photos/photo2.webp',
-  'photos/photo3.webp',
-  'photos/photo4.webp',
-  'photos/photo5.webp',
-  'photos/photo6.webp',
-  'photos/photo7.webp',
-  'photos/photo8.webp',
-];
-// ============================================================
+  try {
+    const [about, photos, events, music] = await Promise.all([
+      fetchJson('/content/about.json'),
+      fetchJson('/content/photos.json'),
+      fetchJson('/content/events.json'),
+      fetchJson('/content/music.json'),
+    ]);
+    ABOUT  = about;
+    PHOTOS = Array.isArray(photos.photos) ? photos.photos : [];
+    EVENTS = Array.isArray(events.events) ? events.events : [];
+    MUSIC  = Array.isArray(music.tracks) ? music.tracks : [];
+  } catch (err) {
+    console.error('Could not load site content:', err);
+  }
+}
 
 
 /* ---- Render Events ---- */
@@ -161,6 +92,42 @@ function renderEvents() {
     `;
     list.appendChild(item);
   });
+}
+
+/* ---- Render About ---- */
+function renderAbout() {
+  const paragraphsEl = document.getElementById('about-paragraphs');
+  const statsEl       = document.getElementById('about-stats');
+  if (!ABOUT || !paragraphsEl || !statsEl) return;
+
+  paragraphsEl.innerHTML = (ABOUT.paragraphs || [])
+    .map(p => `<p>${escHtml(p)}</p>`)
+    .join('');
+
+  statsEl.innerHTML = (ABOUT.stats || [])
+    .map(s => `
+      <div class="stat">
+        <span class="stat-num mono">${escHtml(s.num)}</span>
+        <span class="stat-label mono">${escHtml(s.label)}</span>
+      </div>
+    `)
+    .join('');
+}
+
+/* ---- Render Music ---- */
+function renderMusic() {
+  const grid = document.getElementById('music-grid');
+  if (!grid) return;
+
+  grid.innerHTML = MUSIC.map(track => `
+    <div class="music-card">
+      <button type="button" class="music-facade" data-track-id="${escHtml(track.trackId)}" data-track-title="${escHtml(track.title)}" data-track-url="${escHtml(track.url)}" aria-label="Load SoundCloud player and play ${escHtml(track.title)}">
+        <svg class="music-facade-play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="48" height="48" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 8l6 4-6 4V8z"/></svg>
+        <span class="music-facade-title notranslate" translate="no">${escHtml(track.title)}</span>
+        <span class="music-facade-hint">Click to load player from SoundCloud</span>
+      </button>
+    </div>
+  `).join('');
 }
 
 /* ---- Skeleton loaders ----
@@ -748,8 +715,11 @@ function initMusicFacades() {
 
 
 /* ---- Init ---- */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadSiteContent();
+  renderAbout();
   renderEvents();
+  renderMusic();
   initCarousel();
   initParticles();
   initNav();

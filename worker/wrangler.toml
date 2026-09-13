@@ -1,0 +1,27 @@
+name = "zerocee-admin"
+main = "src/index.js"
+compatibility_date = "2024-11-01"
+
+# Routes the Worker to intercept requests to the site's own /api/* path
+# (Cloudflare already proxies www.zerocee.ch), so admin panel calls are
+# same-origin — no separate workers.dev domain needed in normal use.
+routes = [
+  { pattern = "www.zerocee.ch/api/*", zone_name = "zerocee.ch" }
+]
+
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "aab82949a6a748248f8ea9a7b9cc5f14" # from `wrangler kv namespace create RATE_LIMIT_KV`
+
+# Non-secret configuration only. Secrets (GITHUB_TOKEN, SESSION_SECRET,
+# ADMIN_PASSWORD_SALT, ADMIN_PASSWORD_HASH, CF_API_TOKEN) are set with
+# `wrangler secret put <NAME>` and must never be added here — this file
+# is committed to the (public) repo.
+[vars]
+GITHUB_REPO = "matttiu/Zero-Cee"
+GITHUB_BRANCH = "main"
+COMMIT_AUTHOR_NAME = "Zero Cee Admin Bot"
+COMMIT_AUTHOR_EMAIL = "admin-bot@users.noreply.zerocee.ch"
+SESSION_TTL_SECONDS = "43200"
+CF_ZONE_ID = "695d31f10a5157c41ac011f5cdc563ea" # Cloudflare zone id for zerocee.ch — not sensitive
+ALLOWED_ORIGIN = "https://www.zerocee.ch"

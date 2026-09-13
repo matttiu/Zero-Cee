@@ -1,0 +1,76 @@
+{
+  "events": [
+    {
+      "id": "evt_20260703_kraftwerk",
+      "date": "2026-07-03",
+      "venue": "Kraftwerk",
+      "city": "Zurich",
+      "country": "CH",
+      "type": "Club Night",
+      "tickets": "https://eventfrog.ch/de/p/partys/house-techno/nachtzugang-x-blackout-7469385293575024925.html?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQPOTM2NjE5NzQzMzkyNDU5AAGn7aCNTmU3KnE548gtq05eZpWlxhI9MfAUR1sUsSoKvEmv6i1DmTC2pLbQghs_aem_Wgl4-U7D2PgmXot4awMvHQs"
+    },
+    {
+      "id": "evt_20260709_private",
+      "date": "2026-07-09",
+      "venue": "Private",
+      "city": "Effretikon",
+      "country": "CH",
+      "type": "Private/Invite Only",
+      "tickets": ""
+    },
+    {
+      "id": "evt_20260814_club04",
+      "date": "2026-08-14",
+      "venue": "Club04",
+      "city": "Zurich",
+      "country": "CH",
+      "type": "Bounce | Hardtechno",
+      "tickets": "https://eventfrog.ch/de/p/partys/house-techno/blackout-x-nachtzugang-7484990940450445939.html"
+    },
+    {
+      "id": "evt_20260821_private",
+      "date": "2026-08-21",
+      "venue": "Private",
+      "city": "Maur",
+      "country": "CH",
+      "type": "Invite Only",
+      "tickets": ""
+    },
+    {
+      "id": "evt_20260822_friendsparty",
+      "date": "2026-08-22",
+      "venue": "Friends Party",
+      "city": "Zurich",
+      "country": "CH",
+      "type": "Invite Only",
+      "tickets": ""
+    },
+    {
+      "id": "evt_20260828_rooftop",
+      "date": "2026-08-28",
+      "venue": "Rooftop Private Party",
+      "city": "Zurich",
+      "country": "CH",
+      "type": "Rooftop Private",
+      "tickets": ""
+    },
+    {
+      "id": "evt_20260926_homeparty",
+      "date": "2026-09-26",
+      "venue": "Private Homeparty",
+      "city": "N/A",
+      "country": "CH",
+      "type": "Invite Only",
+      "tickets": ""
+    },
+    {
+      "id": "evt_20260807_lecafe",
+      "date": "2026-08-07",
+      "venue": "Le Café",
+      "city": "Zürich",
+      "country": "CH",
+      "type": "Bar",
+      "tickets": ""
+    }
+  ]
+}

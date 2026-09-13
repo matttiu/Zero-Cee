@@ -1,0 +1,58 @@
+name: Process incoming photos
+
+on:
+  push:
+    branches: [main]
+    paths: ['photos/incoming/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Serialize runs so two near-simultaneous uploads can't race each other
+# and step on content/photos.json or pick the same photoN slot.
+concurrency:
+  group: process-incoming-photos
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install sharp
+        run: npm install sharp@0.33
+
+      - name: Process incoming photos
+        run: node .github/scripts/process-incoming-photos.mjs
+
+      - name: Commit and push processed photos
+        run: |
+          git config user.name "Zero Cee Admin Bot"
+          git config user.email "admin-bot@users.noreply.zerocee.ch"
+          git add photos/ content/photos.json
+          # [skip ci] is required: this commit deletes files under
+          # photos/incoming/, which still matches this workflow's own
+          # path filter and would otherwise re-trigger it in a loop.
+          git diff --cached --quiet || git commit -m "Process incoming photo(s) [skip ci]"
+          git push
+
+      - name: Purge Cloudflare cache for photos.json
+        if: success()
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
+        run: |
+          if [ -z "$CF_API_TOKEN" ] || [ -z "$CF_ZONE_ID" ]; then
+            echo "Cloudflare secrets not configured yet — skipping cache purge."
+            exit 0
+          fi
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CF_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"files":["https://www.zerocee.ch/content/photos.json"]}'

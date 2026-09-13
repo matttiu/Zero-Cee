@@ -1,0 +1,9 @@
+# Copy this file to .dev.vars (gitignored) and fill in real values for
+# local `wrangler dev` testing. Point GITHUB_REPO at a disposable test
+# repo/branch while iterating — never real production secrets here.
+
+GITHUB_TOKEN=
+SESSION_SECRET=
+ADMIN_PASSWORD_SALT=
+ADMIN_PASSWORD_HASH=
+CF_API_TOKEN=

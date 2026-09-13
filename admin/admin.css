@@ -1,0 +1,271 @@
+/* Admin panel — reuses /styles.css's color variables & fonts, but is a
+   plain top-to-bottom form layout, not the marketing site's design. */
+
+.admin-body {
+  min-height: 100vh;
+  padding: 24px 16px 64px;
+}
+
+.admin-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-login-form {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 32px 24px;
+  border: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.admin-login-form h1 {
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+
+.admin-dashboard {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.admin-header h1 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.admin-tab {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 2px solid transparent;
+}
+
+.admin-tab.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.admin-panel h2 {
+  margin-top: 0;
+}
+
+.admin-hint {
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: -8px;
+  margin-bottom: 20px;
+}
+
+.admin-subhead {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  margin: 20px 0 8px;
+}
+
+label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-bottom: 4px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+input[type="url"],
+textarea {
+  width: 100%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 10px;
+  border-radius: 2px;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.admin-error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+}
+
+.admin-status {
+  font-size: 0.85rem;
+  color: var(--accent);
+  margin-top: 12px;
+}
+
+.admin-status.is-error {
+  color: #ff6b6b;
+}
+
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.field-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.field-row textarea {
+  flex: 1;
+  resize: vertical;
+}
+
+.btn-remove {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  width: 32px;
+  height: 32px;
+  flex: none;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 2px;
+}
+
+.btn-remove:hover {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.stat-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.photo-tile {
+  position: relative;
+  aspect-ratio: 1;
+  border: 1px solid var(--border);
+  cursor: grab;
+  overflow: hidden;
+}
+
+.photo-tile.dragging {
+  opacity: 0.4;
+}
+
+.photo-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+.photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(10, 10, 10, 0.75);
+  color: #fff;
+  border: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.photo-remove:hover {
+  background: #ff6b6b;
+}
+
+.upload-dropzone {
+  border: 1px dashed var(--border-strong);
+  padding: 20px;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.upload-dropzone.drag-over {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.entry-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  border: 1px solid var(--border);
+  padding: 10px;
+  border-radius: 2px;
+}
+
+.entry-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+  flex: 1;
+}
+
+.add-track-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 8px;
+  align-items: start;
+}
+
+@media (max-width: 560px) {
+  .add-track-row { grid-template-columns: 1fr; }
+  .entry-row { flex-direction: column; }
+}

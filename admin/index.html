@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — ZERO CEE</title>
+  <link rel="icon" href="/icon-180.png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+<body class="admin-body">
+
+<div id="login-view" class="admin-login">
+  <form id="login-form" class="admin-login-form" novalidate>
+    <h1 class="mono">ZERO CEE — Admin</h1>
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" autocomplete="current-password" required autofocus>
+    <button type="submit" class="btn btn-primary btn-full">Log In</button>
+    <p id="login-error" class="admin-error" hidden></p>
+  </form>
+</div>
+
+<div id="dashboard-view" class="admin-dashboard" hidden>
+  <header class="admin-header">
+    <h1 class="mono">ZERO CEE — Admin</h1>
+    <button type="button" id="logout-btn" class="btn btn-ghost btn-sm">Log Out</button>
+  </header>
+
+  <nav class="admin-tabs" role="tablist">
+    <button type="button" class="admin-tab active" data-tab="about">About</button>
+    <button type="button" class="admin-tab" data-tab="photos">Photos</button>
+    <button type="button" class="admin-tab" data-tab="events">Events</button>
+    <button type="button" class="admin-tab" data-tab="music">Music</button>
+  </nav>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="panel-about" class="admin-panel">
+    <h2>About Text</h2>
+    <p class="admin-hint">This is the bio text and the three stat numbers shown on the About section of the site.</p>
+    <form id="about-form">
+      <div id="about-paragraphs-editor" class="field-list"></div>
+      <button type="button" id="add-paragraph-btn" class="btn btn-ghost btn-sm">+ Add paragraph</button>
+
+      <h3 class="admin-subhead">Stats</h3>
+      <div class="stats-grid">
+        <div class="stat-field">
+          <label for="stat1-num">Number</label>
+          <input type="text" id="stat1-num" placeholder="20+">
+          <label for="stat1-label">Label</label>
+          <input type="text" id="stat1-label" placeholder="Shows">
+        </div>
+        <div class="stat-field">
+          <label for="stat2-num">Number</label>
+          <input type="text" id="stat2-num" placeholder="3+">
+          <label for="stat2-label">Label</label>
+          <input type="text" id="stat2-label" placeholder="Years">
+        </div>
+        <div class="stat-field">
+          <label for="stat3-num">Number</label>
+          <input type="text" id="stat3-num" placeholder="CH">
+          <label for="stat3-label">Label</label>
+          <input type="text" id="stat3-label" placeholder="Based">
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Save changes</button>
+      <p id="about-status" class="admin-status" hidden></p>
+    </form>
+  </section>
+
+  <!-- ===================== PHOTOS ===================== -->
+  <section id="panel-photos" class="admin-panel" hidden>
+    <h2>Photos</h2>
+    <p class="admin-hint">Drag photos to reorder them. Click a photo's &times; to remove it. New photos are automatically resized — just upload the original.</p>
+
+    <div id="photo-grid" class="photo-grid"></div>
+
+    <div id="upload-dropzone" class="upload-dropzone">
+      <button type="button" id="upload-btn" class="btn btn-ghost">+ Upload photo</button>
+      <input type="file" id="photo-upload-input" accept="image/jpeg,image/png,image/webp" hidden>
+      <p id="upload-status" class="admin-status" hidden></p>
+    </div>
+    <p id="photos-status" class="admin-status" hidden></p>
+  </section>
+
+  <!-- ===================== EVENTS ===================== -->
+  <section id="panel-events" class="admin-panel" hidden>
+    <h2>Events</h2>
+    <p class="admin-hint">Past events are hidden from the site automatically — no need to delete them.</p>
+    <form id="events-form">
+      <div id="events-editor" class="entry-list"></div>
+      <button type="button" id="add-event-btn" class="btn btn-ghost btn-sm">+ Add event</button>
+      <div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+      <p id="events-status" class="admin-status" hidden></p>
+    </form>
+  </section>
+
+  <!-- ===================== MUSIC ===================== -->
+  <section id="panel-music" class="admin-panel" hidden>
+    <h2>Music / SoundCloud Sets</h2>
+    <p class="admin-hint">Paste a SoundCloud track link and a title, then click Add — the track ID is looked up automatically.</p>
+
+    <div class="add-track-row">
+      <input type="url" id="new-track-url" placeholder="https://soundcloud.com/...">
+      <input type="text" id="new-track-title" placeholder="Track title">
+      <button type="button" id="resolve-track-btn" class="btn btn-ghost btn-sm">+ Add</button>
+    </div>
+    <p id="resolve-status" class="admin-status" hidden></p>
+
+    <form id="music-form">
+      <div id="music-editor" class="entry-list"></div>
+      <div>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+      <p id="music-status" class="admin-status" hidden></p>
+    </form>
+  </section>
+</div>
+
+<script src="/admin/admin.js"></script>
+</body>
+</html>
