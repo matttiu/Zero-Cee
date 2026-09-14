@@ -71,6 +71,15 @@
       "country": "CH",
       "type": "Bar",
       "tickets": ""
+    },
+    {
+      "id": "evt_1789381405104_srrxcu",
+      "date": "2026-09-17",
+      "venue": "Test",
+      "city": "Test",
+      "country": "CH",
+      "type": "Club",
+      "tickets": ""
     }
   ]
 }
