@@ -40,9 +40,15 @@ function encodeBase64Utf8(str) {
 /** Reads a small JSON file from the repo. Returns { data, sha }. */
 export async function getFile(env, path) {
   const url = `${API_BASE}/repos/${env.GITHUB_REPO}/contents/${path}?ref=${env.GITHUB_BRANCH}`;
-  const res = await fetch(url, { headers: headers(env) });
-  if (!res.ok) throw new GitHubError(`Failed to read ${path}`, res.status);
+  // cacheTtl 0: the sha read here is what the next write is checked against,
+  // so an edge-cached response would hand back a stale sha and turn every
+  // save into a spurious "content changed elsewhere" conflict.
+  const res = await fetch(url, { headers: headers(env), cf: { cacheTtl: 0 } });
+  if (!res.ok) throw new GitHubError(`Failed to read ${path} (GitHub ${res.status})`, res.status);
   const json = await res.json();
+  if (json.encoding !== 'base64' || typeof json.content !== 'string') {
+    throw new GitHubError(`Unexpected response reading ${path}`, 502);
+  }
   return { data: JSON.parse(decodeBase64Utf8(json.content)), sha: json.sha };
 }
 
@@ -63,7 +69,15 @@ export async function putFile(env, path, data, sha, message) {
   if (res.status === 409 || res.status === 422) {
     throw new GitHubError('Content changed elsewhere — please reload and try again', 409);
   }
-  if (!res.ok) throw new GitHubError(`Failed to write ${path}`, res.status);
+  if (res.status === 403 || res.status === 404) {
+    // 404 on a write to a file we just read means the token can read but not
+    // write — GitHub hides write-denied as "not found" on fine-grained PATs.
+    throw new GitHubError(
+      `GitHub refused the write (${res.status}) — the GITHUB_TOKEN secret needs Contents: read and write on ${env.GITHUB_REPO}`,
+      res.status
+    );
+  }
+  if (!res.ok) throw new GitHubError(`Failed to write ${path} (GitHub ${res.status})`, res.status);
   const json = await res.json();
   return { sha: json.content.sha };
 }

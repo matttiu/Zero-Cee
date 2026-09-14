@@ -701,7 +701,7 @@ function initMusicFacades() {
       credit.className = 'notranslate';
       credit.setAttribute('translate', 'no');
       credit.style.cssText = 'font-size: 10px; color: #cccccc; line-break: anywhere; word-break: normal; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif; font-weight: 100;';
-      credit.innerHTML = `<a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="${trackUrl}" title="${escHtml(trackTitle)}" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">${escHtml(trackTitle)}</a>`;
+      credit.innerHTML = `<a href="https://soundcloud.com/siro-cescutti" title="ZERO CEE" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">ZERO CEE</a> · <a href="${escHtml(trackUrl)}" title="${escHtml(trackTitle)}" target="_blank" rel="noopener noreferrer" style="color: #cccccc; text-decoration: none;">${escHtml(trackTitle)}</a>`;
 
       // Wrap iframe so a skeleton can cover it until SoundCloud loads
       const embed = document.createElement('div');

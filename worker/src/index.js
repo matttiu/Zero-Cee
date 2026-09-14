@@ -45,19 +45,25 @@ export default {
       return new Response(null, { headers: corsHeaders(env) });
     }
 
+    // NOTE: every handler below must be `return await`, not bare `return`.
+    // A bare `return somePromise` inside a try block is not awaited there,
+    // so a rejection escapes this catch, the Worker throws, and Cloudflare
+    // replies with an HTML error page — which the admin panel then tries to
+    // JSON.parse, surfacing as "Unexpected token '<'" instead of the real
+    // error message.
     try {
-      if (path === '/login' && method === 'POST') return handleLogin(request, env);
-      if (path === '/me' && method === 'GET') return handleMe(request, env);
+      if (path === '/login' && method === 'POST') return await handleLogin(request, env);
+      if (path === '/me' && method === 'GET') return await handleMe(request, env);
 
       const contentMatch = path.match(/^\/content\/([a-z]+)$/);
-      if (contentMatch && method === 'GET') return handleGetContent(request, env, contentMatch[1]);
-      if (contentMatch && method === 'PUT') return handlePutContent(request, env, contentMatch[1]);
+      if (contentMatch && method === 'GET') return await handleGetContent(request, env, contentMatch[1]);
+      if (contentMatch && method === 'PUT') return await handlePutContent(request, env, contentMatch[1]);
 
-      if (path === '/photos/upload' && method === 'POST') return handleUpload(request, env);
-      if (path === '/music/resolve' && method === 'POST') return handleResolveMusic(request, env);
+      if (path === '/photos/upload' && method === 'POST') return await handleUpload(request, env);
+      if (path === '/music/resolve' && method === 'POST') return await handleResolveMusic(request, env);
 
       const statusMatch = path.match(/^\/photos\/status\/([A-Za-z0-9_.-]+)$/);
-      if (statusMatch && method === 'GET') return handlePhotoStatus(request, env, statusMatch[1]);
+      if (statusMatch && method === 'GET') return await handlePhotoStatus(request, env, statusMatch[1]);
 
       return error(env, 'Not found', 404);
     } catch (err) {
@@ -201,13 +207,30 @@ async function handleResolveMusic(request, env) {
 
   const oembedRes = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`);
   if (!oembedRes.ok) return error(env, 'Could not find that SoundCloud track — check the link', 422);
-  const oembed = await oembedRes.json();
 
-  const match = /tracks%3A(\d+)|tracks\/(\d+)/.exec(oembed.html || '');
-  const trackId = match ? match[1] || match[2] : null;
+  let oembed;
+  try {
+    oembed = await oembedRes.json();
+  } catch {
+    return error(env, 'SoundCloud returned an unreadable response — please try again', 502);
+  }
+
+  // The track id sits inside the embed iframe's src, where SoundCloud
+  // percent-encodes the separator. Today that is
+  // `...api.soundcloud.com%2Ftracks%2F2393929053...`, but the widget URL has
+  // historically also used `tracks/`, `tracks%3A` and `tracks%253A`, so
+  // accept every separator rather than a single hard-coded one.
+  const match = /tracks(?:\/|%2F|%252F|%3A|%253A)(\d+)/i.exec(oembed.html || '');
+  const trackId = match ? match[1] : null;
   if (!trackId) return error(env, 'Could not read a track ID from that link', 422);
 
-  return json(env, { trackId, title: oembed.title || '', url });
+  // oEmbed titles come back as "Track name by Artist" — drop the suffix so
+  // the suggested title matches how tracks are already named in music.json.
+  let title = oembed.title || '';
+  const author = oembed.author_name || '';
+  if (author && title.endsWith(` by ${author}`)) title = title.slice(0, -` by ${author}`.length);
+
+  return json(env, { trackId, title, url });
 }
 
 async function handlePhotoStatus(request, env, name) {

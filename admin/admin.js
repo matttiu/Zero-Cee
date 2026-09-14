@@ -21,6 +21,26 @@ async function apiFetch(path, options = {}) {
   return fetch(`${API_BASE}${path}`, { ...options, headers });
 }
 
+/* Reads a response body as JSON without letting a non-JSON reply (a
+   Cloudflare error page, a GitHub Pages 404 when the Worker route misses)
+   surface as a bare "Unexpected token '<'" SyntaxError. */
+async function readJson(res) {
+  const text = await res.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Server returned an unexpected response (HTTP ${res.status}). Please try again.`);
+  }
+}
+
+/* Turns any response into a thrown Error carrying the server's own message
+   when the request failed, or the parsed body when it succeeded. */
+async function readJsonOrThrow(res, fallback) {
+  const body = await readJson(res);
+  if (!res.ok) throw new Error(body.error || fallback);
+  return body;
+}
+
 function escapeHtml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -76,7 +96,7 @@ loginForm.addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ password }),
     });
-    const body = await res.json();
+    const body = await readJson(res);
     if (!res.ok) throw new Error(body.error || 'Login failed');
     setToken(body.token);
     loginForm.reset();
@@ -118,11 +138,14 @@ function initDashboard() {
 let aboutSha = null;
 
 async function loadAbout() {
-  const res = await apiFetch('/content/about');
-  if (!res.ok) return;
-  const { data, sha } = await res.json();
-  aboutSha = sha;
-  renderAboutForm(data);
+  try {
+    const res = await apiFetch('/content/about');
+    const { data, sha } = await readJsonOrThrow(res, 'Could not load the about text');
+    aboutSha = sha;
+    renderAboutForm(data);
+  } catch (err) {
+    showStatus(document.getElementById('about-status'), `${err.message} — reload before editing.`, true);
+  }
 }
 
 function renderAboutForm(data) {
@@ -160,6 +183,10 @@ document.getElementById('add-paragraph-btn').addEventListener('click', () => add
 
 document.getElementById('about-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!aboutSha) {
+    showStatus(document.getElementById('about-status'), 'Nothing was loaded to edit — reload the page and try again.', true);
+    return;
+  }
   const paragraphs = Array.from(document.querySelectorAll('.about-paragraph-input'))
     .map(t => t.value.trim())
     .filter(Boolean);
@@ -179,7 +206,7 @@ document.getElementById('about-form').addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { paragraphs, stats }, sha: aboutSha }),
     });
-    const body = await res.json();
+    const body = await readJson(res);
     if (res.status === 409) {
       showStatus(statusEl, 'Content changed elsewhere — reloaded the latest version, please redo your edit.', true);
       await loadAbout();
@@ -201,12 +228,15 @@ let photosSha  = null;
 let photosList = [];
 
 async function loadPhotos() {
-  const res = await apiFetch('/content/photos');
-  if (!res.ok) return;
-  const { data, sha } = await res.json();
-  photosSha = sha;
-  photosList = data.photos || [];
-  renderPhotoGrid();
+  try {
+    const res = await apiFetch('/content/photos');
+    const { data, sha } = await readJsonOrThrow(res, 'Could not load the photo list');
+    photosSha = sha;
+    photosList = data.photos || [];
+    renderPhotoGrid();
+  } catch (err) {
+    showStatus(document.getElementById('photos-status'), `${err.message} — reload before editing.`, true);
+  }
 }
 
 function renderPhotoGrid() {
@@ -276,7 +306,7 @@ async function savePhotos() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { photos: photosList }, sha: photosSha }),
     });
-    const body = await res.json();
+    const body = await readJson(res);
     if (res.status === 409) {
       showStatus(statusEl, 'Content changed elsewhere — reloaded the latest version.', true);
       await loadPhotos();
@@ -323,7 +353,7 @@ async function handleUploadFile(file) {
     const form = new FormData();
     form.append('photo', jpegBlob, 'photo.jpg');
     const res = await apiFetch('/photos/upload', { method: 'POST', body: form });
-    const body = await res.json();
+    const body = await readJson(res);
     if (!res.ok) throw new Error(body.error || 'Upload failed');
 
     uploadStatus.textContent = 'Processing… (usually under a minute)';
@@ -369,7 +399,7 @@ async function pollPhotoStatus(name, attempts = 20) {
     await new Promise(r => setTimeout(r, 3000));
     const res = await apiFetch(`/photos/status/${encodeURIComponent(name)}`);
     if (res.ok) {
-      const { pending } = await res.json();
+      const { pending } = await readJson(res).catch(() => ({ pending: true }));
       if (!pending) return;
     }
   }
@@ -384,13 +414,16 @@ function newId(prefix) {
 }
 
 async function loadEvents() {
-  const res = await apiFetch('/content/events');
-  if (!res.ok) return;
-  const { data, sha } = await res.json();
-  eventsSha = sha;
-  const wrap = document.getElementById('events-editor');
-  wrap.innerHTML = '';
-  (data.events || []).forEach(ev => wrap.appendChild(buildEventRow(ev)));
+  try {
+    const res = await apiFetch('/content/events');
+    const { data, sha } = await readJsonOrThrow(res, 'Could not load the events list');
+    eventsSha = sha;
+    const wrap = document.getElementById('events-editor');
+    wrap.innerHTML = '';
+    (data.events || []).forEach(ev => wrap.appendChild(buildEventRow(ev)));
+  } catch (err) {
+    showStatus(document.getElementById('events-status'), `${err.message} — reload before editing.`, true);
+  }
 }
 
 function buildEventRow(ev) {
@@ -435,6 +468,10 @@ document.getElementById('add-event-btn').addEventListener('click', () => {
 
 document.getElementById('events-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!eventsSha) {
+    showStatus(document.getElementById('events-status'), 'Nothing was loaded to edit — reload the page and try again.', true);
+    return;
+  }
   const rows = Array.from(document.querySelectorAll('#events-editor .entry-row'));
   const events = rows.map(row => ({
     id:      row.dataset.id,
@@ -457,7 +494,7 @@ document.getElementById('events-form').addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { events }, sha: eventsSha }),
     });
-    const body = await res.json();
+    const body = await readJson(res);
     if (res.status === 409) {
       showStatus(statusEl, 'Content changed elsewhere — reloaded the latest version, please redo your edit.', true);
       await loadEvents();
@@ -478,13 +515,16 @@ document.getElementById('events-form').addEventListener('submit', async (e) => {
 let musicSha = null;
 
 async function loadMusic() {
-  const res = await apiFetch('/content/music');
-  if (!res.ok) return;
-  const { data, sha } = await res.json();
-  musicSha = sha;
-  const wrap = document.getElementById('music-editor');
-  wrap.innerHTML = '';
-  (data.tracks || []).forEach(t => wrap.appendChild(buildTrackRow(t)));
+  try {
+    const res = await apiFetch('/content/music');
+    const { data, sha } = await readJsonOrThrow(res, 'Could not load the track list');
+    musicSha = sha;
+    const wrap = document.getElementById('music-editor');
+    wrap.innerHTML = '';
+    (data.tracks || []).forEach(t => wrap.appendChild(buildTrackRow(t)));
+  } catch (err) {
+    showStatus(document.getElementById('music-status'), `${err.message} — reload before editing.`, true);
+  }
 }
 
 function buildTrackRow(track) {
@@ -535,7 +575,7 @@ document.getElementById('resolve-track-btn').addEventListener('click', async () 
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ url }),
     });
-    const body = await res.json();
+    const body = await readJson(res);
     if (!res.ok) throw new Error(body.error || 'Could not resolve that link');
 
     const title = titleInput.value.trim() || body.title || '';
@@ -555,6 +595,10 @@ document.getElementById('resolve-track-btn').addEventListener('click', async () 
 
 document.getElementById('music-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!musicSha) {
+    showStatus(document.getElementById('music-status'), 'Nothing was loaded to edit — reload the page and try again.', true);
+    return;
+  }
   const rows = Array.from(document.querySelectorAll('#music-editor .entry-row'));
   const tracks = rows.map(row => ({
     id:      row.dataset.id,
@@ -574,7 +618,7 @@ document.getElementById('music-form').addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: { tracks }, sha: musicSha }),
     });
-    const body = await res.json();
+    const body = await readJson(res);
     if (res.status === 409) {
       showStatus(statusEl, 'Content changed elsewhere — reloaded the latest version, please redo your edit.', true);
       await loadMusic();

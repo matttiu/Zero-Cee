@@ -24,6 +24,16 @@ function isHttpsUrl(value, hostPattern) {
   return true;
 }
 
+// Date.parse is lenient enough to accept 2026-02-31 (and roll it into
+// March), so round-trip the parsed date and require it to come back
+// identical before treating it as a real calendar day.
+function isCalendarDate(value) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const ms = Date.parse(`${value}T00:00:00Z`);
+  if (Number.isNaN(ms)) return false;
+  return new Date(ms).toISOString().slice(0, 10) === value;
+}
+
 export const CONTENT_TYPES = ['about', 'photos', 'events', 'music'];
 
 export function validateAbout(data) {
@@ -56,7 +66,7 @@ export function validateEvents(data) {
     if (seenIds.has(ev.id)) return 'Duplicate event id';
     seenIds.add(ev.id);
 
-    if (typeof ev.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(ev.date) || Number.isNaN(Date.parse(ev.date))) {
+    if (!isCalendarDate(ev.date)) {
       return `Event "${ev.venue || ev.id}" has an invalid date (must be YYYY-MM-DD)`;
     }
     if (!isPlainText(ev.venue, 100)) return 'Venue must be plain text, 1-100 characters';
@@ -91,9 +101,17 @@ export function validateMusic(data) {
 
 export function validatePhotos(data, previousPhotos) {
   if (!data || !Array.isArray(data.photos)) return 'Invalid data';
-  if (data.photos.length > 30) return 'Too many photos (max 30)';
 
-  const allowed = new Set(previousPhotos || []);
+  // The upload workflow appends to photos.json outside this check, so the
+  // list can already sit at or above the cap. Only block saves that would
+  // keep it there — a save that removes photos must always be allowed, or
+  // an over-cap gallery becomes impossible to trim back down.
+  const previous = previousPhotos || [];
+  if (data.photos.length > 30 && data.photos.length >= previous.length) {
+    return 'Too many photos (max 30) — remove some first';
+  }
+
+  const allowed = new Set(previous);
   for (const p of data.photos) {
     if (typeof p !== 'string' || !/^photos\/[A-Za-z0-9_-]+\.webp$/.test(p)) return 'Invalid photo filename';
     if (!allowed.has(p)) return 'Photos can only be reordered or removed here — use Upload to add a new one';
