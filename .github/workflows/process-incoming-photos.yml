@@ -40,6 +40,7 @@ jobs:
           # photos/incoming/, which still matches this workflow's own
           # path filter and would otherwise re-trigger it in a loop.
           git diff --cached --quiet || git commit -m "Process incoming photo(s) [skip ci]"
+          git pull --rebase
           git push
 
       - name: Purge Cloudflare cache for photos.json
