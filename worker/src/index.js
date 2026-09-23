@@ -1,7 +1,7 @@
 // Zero Cee admin API — the only thing in this whole setup that ever
 // talks to GitHub with write access. Routed at www.zerocee.ch/api/* (see
 // wrangler.toml), so calls from /admin/ are same-origin.
-import { verifyPassword, createSession, verifySession, checkRateLimit, recordFailedAttempt, clearRateLimit } from './auth.js';
+import { verifyPassword, createSession, verifySession, isSessionRevoked, revokeSession, checkRateLimit, recordFailedAttempt, clearRateLimit } from './auth.js';
 import { getFile, putFile, listDirectory, commitBlob, GitHubError } from './github.js';
 import { validateAbout, validateEvents, validateMusic, validatePhotos, CONTENT_TYPES } from './validate.js';
 import { purgeCache } from './cache-purge.js';
@@ -27,11 +27,17 @@ function error(env, message, status = 400) {
   return json(env, { error: message }, status);
 }
 
+// Returns the session payload ({ iat, exp, jti }) if the token is valid,
+// unexpired, and not revoked — or null otherwise. Existing call sites that
+// only check truthiness (`if (!(await requireSession(...)))`) keep working.
 async function requireSession(request, env) {
   const authHeader = request.headers.get('Authorization') || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  if (!token) return false;
-  return verifySession(token, env.SESSION_SECRET);
+  if (!token) return null;
+  const payload = await verifySession(token, env.SESSION_SECRET);
+  if (!payload) return null;
+  if (await isSessionRevoked(env.RATE_LIMIT_KV, payload.jti)) return null;
+  return payload;
 }
 
 export default {
@@ -53,6 +59,7 @@ export default {
     // error message.
     try {
       if (path === '/login' && method === 'POST') return await handleLogin(request, env);
+      if (path === '/logout' && method === 'POST') return await handleLogout(request, env);
       if (path === '/me' && method === 'GET') return await handleMe(request, env);
 
       const contentMatch = path.match(/^\/content\/([a-z]+)$/);
@@ -102,6 +109,14 @@ async function handleLogin(request, env) {
 
 async function handleMe(request, env) {
   if (!(await requireSession(request, env))) return error(env, 'Not authenticated', 401);
+  return json(env, { ok: true });
+}
+
+async function handleLogout(request, env) {
+  const session = await requireSession(request, env);
+  if (!session) return json(env, { ok: true }); // already invalid/expired — nothing to revoke
+  const remaining = session.exp - Math.floor(Date.now() / 1000);
+  await revokeSession(env.RATE_LIMIT_KV, session.jti, remaining);
   return json(env, { ok: true });
 }
 

@@ -109,9 +109,19 @@ loginForm.addEventListener('submit', async (e) => {
   }
 });
 
-document.getElementById('logout-btn').addEventListener('click', () => {
+document.getElementById('logout-btn').addEventListener('click', async () => {
+  const token = getToken();
   clearToken();
   showLogin();
+  // Best-effort: also kill the session server-side so a copy of this token
+  // (e.g. sitting in browser history) can't keep working after logout.
+  if (token) {
+    try {
+      await fetch(`${API_BASE}/logout`, { method: 'POST', headers: { Authorization: `Bearer ${token}` } });
+    } catch {
+      // Already logged out locally either way.
+    }
+  }
 });
 
 /* ---- Tabs ---- */
