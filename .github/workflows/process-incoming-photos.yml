@@ -32,16 +32,50 @@ jobs:
         run: node .github/scripts/process-incoming-photos.mjs
 
       - name: Commit and push processed photos
+        id: commit
         run: |
           git config user.name "Zero Cee Admin Bot"
           git config user.email "admin-bot@users.noreply.zerocee.ch"
           git add photos/ content/photos.json
+          # Newly added webp files only (not the incoming/ deletions) — these
+          # are what the next step waits on before the manifest cache is purged.
+          NEW_PHOTOS=$(git diff --cached --name-only --diff-filter=A -- 'photos/*.webp')
+          {
+            echo "new_photos<<PHOTO_EOF"
+            echo "$NEW_PHOTOS"
+            echo "PHOTO_EOF"
+          } >> "$GITHUB_OUTPUT"
           # [skip ci] is required: this commit deletes files under
           # photos/incoming/, which still matches this workflow's own
           # path filter and would otherwise re-trigger it in a loop.
           git diff --cached --quiet || git commit -m "Process incoming photo(s) [skip ci]"
           git pull --rebase
           git push
+
+      # The manifest's Cloudflare cache gets purged right after this, so
+      # visitors would otherwise see content/photos.json list a photo before
+      # GitHub Pages has actually finished building and publishing it (a gap
+      # observed to take up to ~80s), which briefly 404s in the gallery. Wait
+      # until each new photo is actually reachable first.
+      - name: Wait for new photos to go live
+        if: success() && steps.commit.outputs.new_photos != ''
+        run: |
+          while IFS= read -r photo; do
+            [ -z "$photo" ] && continue
+            url="https://www.zerocee.ch/$photo"
+            echo "Waiting for $url ..."
+            live=0
+            for i in $(seq 1 30); do
+              status=$(curl -s -o /dev/null -w '%{http_code}' "$url")
+              if [ "$status" = "200" ]; then
+                echo "$url is live"
+                live=1
+                break
+              fi
+              sleep 5
+            done
+            [ "$live" = "1" ] || echo "::warning::$url still not live after 150s — purging anyway"
+          done <<< "${{ steps.commit.outputs.new_photos }}"
 
       - name: Purge Cloudflare cache for photos.json
         if: success()

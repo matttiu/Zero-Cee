@@ -155,30 +155,8 @@ function attachSkeleton(media, label) {
       sk.dataset.label = 'No Signal';
     }
   };
-
-  // A freshly-uploaded photo can 404 for a few seconds while GitHub Pages
-  // finishes publishing the commit, even though content/photos.json already
-  // lists it. Retry with backoff before giving up so visitors don't see a
-  // transient "No Signal" for a photo that loads fine moments later.
-  const RETRY_DELAYS_MS = [3000, 6000, 12000];
-  const originalSrc = media.tagName === 'IMG' ? media.src : null;
-  let retriesLeft = originalSrc ? RETRY_DELAYS_MS.length : 0;
-
-  const onLoad = () => { media.removeEventListener('error', onError); done(true); };
-  const onError = () => {
-    if (retriesLeft > 0) {
-      const delay = RETRY_DELAYS_MS[RETRY_DELAYS_MS.length - retriesLeft];
-      retriesLeft -= 1;
-      setTimeout(() => {
-        media.src = `${originalSrc}${originalSrc.includes('?') ? '&' : '?'}retry=${Date.now()}`;
-      }, delay);
-      return;
-    }
-    media.removeEventListener('load', onLoad);
-    done(false);
-  };
-  media.addEventListener('load', onLoad, { once: true });
-  media.addEventListener('error', onError);
+  media.addEventListener('load', () => done(true), { once: true });
+  media.addEventListener('error', () => done(false), { once: true });
 
   // Iframe fallback: some browsers don't fire load reliably.
   // After 5s assume it's loaded and fade skeleton out.
