@@ -20,7 +20,7 @@ jobs:
         id: check
         env:
           REPORT_FILE: cert-report.txt
-          WARN_DAYS: '365'
+          WARN_DAYS: '14'
         run: bash .github/scripts/check-cert.sh
 
       - name: Add report to job summary
