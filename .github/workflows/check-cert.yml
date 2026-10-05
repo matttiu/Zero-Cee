@@ -1,0 +1,58 @@
+name: Check TLS certificate
+
+on:
+  schedule:
+    - cron: '17 6 * * *'   # daily, 06:17 UTC (off the top of the hour on purpose: less queueing)
+  workflow_dispatch:        # lets you run it by hand from the Actions tab
+
+permissions:
+  contents: read
+  issues: write             # only used to open/comment on the alert issue
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check origin + edge certificates
+        id: check
+        env:
+          REPORT_FILE: cert-report.txt
+          WARN_DAYS: '14'
+        run: bash .github/scripts/check-cert.sh
+
+      - name: Add report to job summary
+        if: always()
+        run: |
+          {
+            echo '```'
+            cat cert-report.txt 2>/dev/null || echo 'no report produced'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open (or update) an alert issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create cert-monitor --color B60205 \
+            --description "Automated TLS certificate alert" 2>/dev/null || true
+          {
+            echo "The scheduled certificate check failed: $RUN_URL"
+            echo
+            echo '```'
+            cat cert-report.txt 2>/dev/null || echo 'no report produced'
+            echo '```'
+            echo
+            echo "Usual fix: GitHub repo Settings > Pages > Remove the custom domain, re-add it, wait for the DNS check, then wait for the certificate to be issued. If the DNS check keeps failing, set the Cloudflare records to DNS only (grey cloud) while it provisions."
+          } > issue-body.md
+          existing="$(gh issue list --label cert-monitor --state open --json number --jq '.[0].number // empty')"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file issue-body.md
+          else
+            gh issue create --title "TLS certificate check failing" \
+              --label cert-monitor --body-file issue-body.md
+          fi
