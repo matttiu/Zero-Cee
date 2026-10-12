@@ -71,6 +71,15 @@
       "country": "CH",
       "type": "Bar",
       "tickets": ""
+    },
+    {
+      "id": "evt_1791791704908_330neg",
+      "date": "2026-10-30",
+      "venue": "Private",
+      "city": "Zürich",
+      "country": "CH",
+      "type": "Club Night",
+      "tickets": ""
     }
   ]
 }
