@@ -5,9 +5,10 @@
 # With the Cloudflare proxy on, a normal "openssl s_client -connect www.zerocee.ch:443"
 # shows CLOUDFLARE'S edge certificate, which auto-renews and is always fine. The
 # certificate that expired on Oct 3 was the ORIGIN one (GitHub Pages / Let's Encrypt),
-# which is only visible by connecting to GitHub's IPs with the right SNI. In SSL mode
-# "Full" (non-strict) Cloudflare also won't complain about an expired origin cert, so
-# without this check an origin expiry is completely silent.
+# which is only visible by connecting to GitHub's IPs with the right SNI.
+# Since Nov 2026 Cloudflare runs in "Full (strict)", so an expired origin cert now
+# takes the site down (526) instead of failing silently; this check is the early
+# warning. GitHub renews ~30 days before expiry, so < WARN_DAYS means renewal is stuck.
 #
 # Exit code: 0 = all good, 1 = at least one problem (the workflow then opens an issue).
 #
@@ -15,7 +16,7 @@
 #   CERT_NAMES     hostnames to check               (default: "www.zerocee.ch zerocee.ch")
 #   ORIGIN_IPS     GitHub Pages IPs to test         (default: the four 185.199.x.153 IPs)
 #   PORT           TLS port                         (default: 443)
-#   WARN_DAYS      fail if origin cert has < N days (default: 14)
+#   WARN_DAYS      fail if origin cert has < N days (default: 21)
 #   EDGE_WARN_DAYS fail if edge cert has < N days   (default: 3)
 #   REPORT_FILE    also write the report here       (default: none)
 
@@ -24,7 +25,7 @@ set -uo pipefail
 read -r -a NAMES <<< "${CERT_NAMES:-www.zerocee.ch zerocee.ch}"
 read -r -a IPS <<< "${ORIGIN_IPS:-185.199.108.153 185.199.109.153 185.199.110.153 185.199.111.153}"
 PORT="${PORT:-443}"
-WARN_DAYS="${WARN_DAYS:-14}"
+WARN_DAYS="${WARN_DAYS:-21}"
 EDGE_WARN_DAYS="${EDGE_WARN_DAYS:-3}"
 REPORT_FILE="${REPORT_FILE:-/dev/null}"
 : > "$REPORT_FILE"

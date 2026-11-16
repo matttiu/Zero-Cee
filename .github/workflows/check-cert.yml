@@ -20,7 +20,7 @@ jobs:
         id: check
         env:
           REPORT_FILE: cert-report.txt
-          WARN_DAYS: '14'
+          WARN_DAYS: '21'   # GitHub renews ~30 days out; <21 means renewal is failing
         run: bash .github/scripts/check-cert.sh
 
       - name: Add report to job summary
@@ -47,7 +47,7 @@ jobs:
             cat cert-report.txt 2>/dev/null || echo 'no report produced'
             echo '```'
             echo
-            echo "Usual fix: GitHub repo Settings > Pages > Remove the custom domain, re-add it, wait for the DNS check, then wait for the certificate to be issued. If the DNS check keeps failing, set the Cloudflare records to DNS only (grey cloud) while it provisions."
+            echo "IMPORTANT: Cloudflare SSL is Full (strict), so an expired origin certificate takes the site DOWN (error 526). Renewal needs http://<domain>/.well-known/acme-challenge/* to reach GitHub unredirected; the Cloudflare redirect rule \"HTTP to HTTPS (except ACME cert renewal)\" exempts that path and Bot Fight Mode must stay off. Usual fix: GitHub repo Settings > Pages > Remove the custom domain, re-add it, wait for the DNS check and certificate. Emergency only: set SSL/TLS mode to Full (not strict) until the certificate is issued, then switch back."
           } > issue-body.md
           existing="$(gh issue list --label cert-monitor --state open --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
