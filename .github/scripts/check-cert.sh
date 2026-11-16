@@ -49,7 +49,7 @@ inspect_cert() {
   end_raw="$(openssl x509 -noout -enddate <<< "$pem" | cut -d= -f2)"
   end_epoch="$(date -d "$end_raw" +%s 2>/dev/null)"
   issuer="$(openssl x509 -noout -issuer <<< "$pem" | sed 's/^issuer=//')"
-  sans="$(openssl x509 -noout -ext subjectAltName <<< "$pem" 2>/dev/null | tail -n +2 | tr -d ' \n')"
+  sans="$(openssl x509 -noout -ext subjectAltName <<< "$pem" 2>/dev/null | tail -n +2 | tr -d ' \r\n')"
   if [ -z "$end_epoch" ]; then fail "could not parse expiry date '$end_raw'"; return; fi
   days=$(( (end_epoch - $(date +%s)) / 86400 ))
 

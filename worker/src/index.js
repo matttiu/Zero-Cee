@@ -19,7 +19,13 @@ function corsHeaders(env) {
 function json(env, body, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json', ...corsHeaders(env) },
+    headers: {
+      'Content-Type': 'application/json',
+      // Admin data is per-session and must never be cached by the browser or Cloudflare.
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+      ...corsHeaders(env),
+    },
   });
 }
 

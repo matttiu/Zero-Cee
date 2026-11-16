@@ -9,13 +9,13 @@
   <meta property="og:description" content="DJ & Producer — Switzerland">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.zerocee.ch/">
-  <meta property="og:image" content="https://www.zerocee.ch/About.jpg">
+  <meta property="og:image" content="https://www.zerocee.ch/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="ZERO CEE">
   <meta name="twitter:description" content="DJ & Producer — Switzerland">
-  <meta name="twitter:image" content="https://www.zerocee.ch/About.jpg">
+  <meta name="twitter:image" content="https://www.zerocee.ch/og-image.jpg">
   <title>ZERO CEE</title>
   <link rel="canonical" href="https://www.zerocee.ch/">
   <link rel="icon" href="/icon-180.png">
@@ -24,7 +24,6 @@
   <link rel="preload" href="/fonts/SpaceMono-700-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/SpaceMono-400-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/SpaceGrotesk-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -339,10 +338,7 @@
 </footer>
 
 <script src="/script.js"></script>
-<script>
-  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
-  formspree('initForm', { formElement: '#booking-form', formId: 'mjgqednd' });
-</script>
-<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+<script src="/booking-form.js"></script>
+<script src="/vendor/formspree-ajax-1.1.5.js" defer></script>
 </body>
 </html>

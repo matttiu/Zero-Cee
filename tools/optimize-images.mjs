@@ -6,7 +6,7 @@
 //
 // What it does:
 //   photos/*.jpg -> same-named .webp (max 960px wide), the .jpg is deleted
-//   About.jpg    -> About.webp (About.jpg is kept — it's the social preview image)
+//   About.jpg    -> About.webp (About.jpg is kept; the social preview image is og-image.jpg, 1200x630)
 //   icon.png     -> icon-180.png (the favicon the pages link to)
 import sharp from 'sharp';
 import { readdirSync, unlinkSync, existsSync } from 'fs';
