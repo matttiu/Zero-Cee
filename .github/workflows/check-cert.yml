@@ -47,7 +47,7 @@ jobs:
             cat cert-report.txt 2>/dev/null || echo 'no report produced'
             echo '```'
             echo
-            echo "IMPORTANT: Cloudflare SSL is Full (strict), so an expired origin certificate takes the site DOWN (error 526). Renewal needs http://<domain>/.well-known/acme-challenge/* to reach GitHub unredirected; the Cloudflare redirect rule \"HTTP to HTTPS (except ACME cert renewal)\" exempts that path and Bot Fight Mode must stay off. Usual fix: GitHub repo Settings > Pages > Remove the custom domain, re-add it, wait for the DNS check and certificate. Emergency only: set SSL/TLS mode to Full (not strict) until the certificate is issued, then switch back."
+            echo "IMPORTANT: Cloudflare SSL is Full (strict), so an expired origin certificate takes the site DOWN (error 526). Renewal needs http://<domain>/.well-known/acme-challenge/* to reach GitHub unredirected; two Cloudflare rules handle that path: the redirect rule \"HTTP to HTTPS (except ACME cert renewal)\" exempts it, and the configuration rule \"ACME challenge: plain HTTP to GitHub origin\" sends it to GitHub over plain HTTP (SSL Flexible, Browser Integrity Check off). Bot Fight Mode must stay off. Usual fix: GitHub repo Settings > Pages > Remove the custom domain, re-add it, wait for the DNS check and certificate. Emergency only: set SSL/TLS mode to Full (not strict) until the certificate is issued, then switch back."
           } > issue-body.md
           existing="$(gh issue list --label cert-monitor --state open --json number --jq '.[0].number // empty')"
           if [ -n "$existing" ]; then
